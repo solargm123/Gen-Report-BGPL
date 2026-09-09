@@ -260,6 +260,15 @@
                         <label class="chk-item"><input type="radio" name="roof_slope" value=">15°" checked> >15°</label>
                     </div>
                 </div>
+                    <div><label class="form-label">Shape of Roof / รูปเเบบหลังคา</label><input type="text" id="Shape_of_Roof" class="form-input"></div>
+                <div>
+                     <label class="form-label">Environment/สภาพแวดล้อม</label>
+                    <div class="chk-group">
+                        <label class="chk-item"><input type="radio" name="Environment" value="Yes"> Good</label>
+                        <label class="chk-item"><input type="radio" name="Environment" value="No" checked> Moderate</label>
+                        <label class="chk-item"><input type="radio" name="Environment" value="No" checked> Severe</label>
+                    </div>
+                </div>
                 <div>
                     <label class="form-label">Shading / เงา</label>
                     <div class="chk-group">
@@ -268,7 +277,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">ตInverter Location / ตำแหน่งอินเวอรืเตอร์</label>
+                    <label class="form-label">Inverter Location / ตำแหน่งอินเวอรืเตอร์</label>
                     <div class="chk-group">
                         <label class="chk-item"><input type="radio" name="inverter_station" value="Indoor" checked> Indoor / ภายใน</label>
                         <label class="chk-item"><input type="radio" name="inverter_station" value="Outdoor"> Outdoor / ภายนอก</label>
@@ -443,6 +452,8 @@ function getReportData() {
         avg_load: g('avg_load') || '',
         trList, mdbList,
         roof_slope: radioVal('roof_slope'),
+        Shape_of_Roof: g('Shape_of_Roof') || '-',
+        Environment: radioVal('Environment'),
         shading: radioVal('shading'),
         inverter_station: radioVal('inverter_station'),
         comments: g('comments') || '',
