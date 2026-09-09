@@ -549,7 +549,7 @@ function generatePDF() {
             <tr><td class="label-cell">Meter / มิเตอร์ไฟฟ้า:</td><td>${data.meter_no}</td>
                 <td class="label-cell">S/N / รหัสเครื่องวัด:</td><td>${data.meter_sn}</td></tr>
             <tr><td class="label-cell">AMR:</td><td class="chk-mark" colspan="3">${chk(data.amr==='Yes')} Yes / มี &nbsp;&nbsp; ${chk(data.amr==='No')} No / ไม่มี</td></tr>
-            <tr><td class="label-cell">Voltage Level (Zero export) / ระดับแรงดันไฟฟ้า: (Zero export)</td><td class="chk-mark" colspan="3">${chk(data.voltage_level==='22kV')} 22kV &nbsp;&nbsp; ${chk(data.voltage_level==='400-230V')} 400-230V</td></tr>
+            <tr><td class="label-cell">Voltage Level (Zero export) / ระดับแรงดันไฟฟ้า:</td><td class="chk-mark" colspan="3">${chk(data.voltage_level==='22kV')} 22kV &nbsp;&nbsp; ${chk(data.voltage_level==='400-230V')} 400-230V</td></tr>
             <tr><td class="label-cell">Avg. Load (kW) / ค่าเฉลี่ยการใช้ไฟฟ้า:</td><td colspan="3">............ ${data.avg_load || ''} kW</td></tr>
         </table>
     `;
@@ -571,16 +571,20 @@ function generatePDF() {
                 ${chk(data.roof_slope==='12-15°')} 12-15° &nbsp;&nbsp;
                 ${chk(data.roof_slope==='> 15°')} มากกว่า 15° &nbsp;&nbsp;
             </td></tr>
+            </td></tr>
             <tr><td class="label-cell">Environment/สภาพแวดล้อม:</td><td class="chk-mark">
                 ${chk(data.shading==='Good')} Good &nbsp;&nbsp; 
                 ${chk(data.shading==='Moderate')} Moderate &nbsp;&nbsp;
                  ${chk(data.shading==='Severe')} Severe &nbsp;&nbsp;
             </td></tr>
+            </td></tr>
             <tr><td class="label-cell">Shading / เงา:</td><td class="chk-mark">
                 ${chk(data.shading==='Yes')} Yes / มีเงา &nbsp;&nbsp; ${chk(data.shading==='No')} No / ไม่มีเงา
             </td></tr>
+            </td></tr>
             <tr><td class="label-cell">Inverter Location / ตำแหน่งอินเวอรืเตอร์:</td><td class="chk-mark">
                 ${chk(data.inverter_station==='Indoor')} Indoor / ภายใน &nbsp;&nbsp; ${chk(data.inverter_station==='Outdoor')} Outdoor / ภายนอก
+            </td></tr>
             </td></tr>
         </table>
 
@@ -589,7 +593,8 @@ function generatePDF() {
             ${(data.comments ? data.comments.split('\\n') : ['','','','']).map(line => `<div>${line}</div>`).join('')}
             ${!data.comments ? '<div></div><div></div>' : ''}
         </div>
-
+         </div> 
+         </div>
         <table class="data-table sign-table" style="margin-top:20px;">
             <tr><td style="width:50%;">&nbsp;<br>${data.rep_epc}</td><td style="width:50%;">&nbsp;<br>${data.rep_bgpl}</td></tr>
             <tr><td style="text-align:center;">Representative (EPC)</td><td style="text-align:center;">Representative (BGPL)</td></tr>
