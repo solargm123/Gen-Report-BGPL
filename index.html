@@ -42,7 +42,7 @@
             display: flex; justify-content: space-between; align-items: flex-start;
             margin-bottom: 6px;
         }
-        .pdf-header h1 { font-size: 20px; font-weight: 700; font-family: 'Sarabun', sans-serif; margin: 0; }
+        .pdf-header h1 { font-size: 20px; font-weight: 700; font-family: 'Bai Jamjuree', sans-serif; margin: 0; }
         .pdf-header .logo img { height: 34px; width: auto; display: block; }
         .pdf-header-no { color: #dc2626; font-weight: 700; font-size: 12px; margin-top: 2px; }
         .pdf-date { font-size: 12px; margin-bottom: 10px; }
@@ -117,7 +117,7 @@
 
         <!-- 1. General Information -->
         <div class="section-card">
-            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-address-card text-sky-600"></i> ข้อมูลทั่วไป (General Information)</h2>
+            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-address-card text-sky-600"></i> General Information (ข้อมูลทั่วไป)</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div><label class="form-label">Site Name / ลูกค้า</label><input type="text" id="site_name" class="form-input"></div>
                 <div><label class="form-label">Site Location / สถานที่</label><input type="text" id="site_location" class="form-input"></div>
@@ -500,57 +500,57 @@ function generatePDF() {
 
         <div class="section-title">ข้อมูลทั่วไป (General Information)</div>
         <table class="data-table">
-            <tr><td class="label-cell">ลูกค้า / Site Name:</td><td>${data.site_name}</td></tr>
-            <tr><td class="label-cell">สถานที่ / Site Location:</td><td>${data.site_location}</td></tr>
-            <tr><td class="label-cell">พิกัด / La, Longitude:</td><td>${data.coordinates}</td></tr>
-            <tr><td class="label-cell">ธุรกิจ / Business:</td><td>${data.business}</td></tr>
-            <tr><td class="label-cell">ผู้ติดต่อ / Contact Name:</td><td>เบอร์ติดต่อ / Contact Number: ${data.contact_number ? data.contact_number : ''} &nbsp;&nbsp; ${data.contact_name}</td></tr>
+            <tr><td class="label-cell">Site Name / ลูกค้า:</td><td>${data.site_name}</td></tr>
+            <tr><td class="label-cell">Site Location / สถานที่:</td><td>${data.site_location}</td></tr>
+            <tr><td class="label-cell">Longitude / พิกัด:</td><td>${data.coordinates}</td></tr>
+            <tr><td class="label-cell">Business / ธุรกิจ:</td><td>${data.business}</td></tr>
+            <tr><td class="label-cell">Contact / ผู้ติดต่อ:</td><td>Contract number / เบอร์ติดต่อ: ${data.contact_number ? data.contact_number : ''} &nbsp;&nbsp; ${data.contact_name}</td></tr>
         </table>
 
-        <div class="section-title">ข้อมูลอาคาร (Building Information)</div>
+        <div class="section-title">Building Information (ข้อมูลอาคาร)</div>
         <table class="data-table">
-            <tr><td class="label-cell">อายุอาคาร / Building Age:</td><td>......${data.building_age || '-'}...... ปี / Year</td></tr>
-            <tr><td class="label-cell">ที่ดิน / Land use Plan:</td><td class="chk-mark">${chk(data.land_use_plan==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.land_use_plan==='No')} ไม่มี / No</td></tr>
-            <tr><td class="label-cell">แบบแปลน / Drawing:</td><td class="chk-mark">${chk(data.drawing==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.drawing==='No')} ไม่มี / No</td></tr>
-            <tr><td class="label-cell">ใบอนุญาต อ.1 / Aor.1:</td><td class="chk-mark">${chk(data.aor_1==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.aor_1==='No')} ไม่มี / No</td></tr>
-            <tr><td class="label-cell">ประเภทอาคาร / Building Type:</td><td class="chk-mark">
-                ${chk(data.building_type.includes('Warehouse'))} โกดัง / Warehouse &nbsp;&nbsp;
-                ${chk(data.building_type.includes('Factory'))} โรงงาน / Factory &nbsp;&nbsp;
-                ${chk(data.building_type.includes('Office'))} ออฟฟิศ / Office &nbsp;&nbsp;
-                ${chk(data.building_type.includes('Others'))} อื่นๆ / Others
+            <tr><td class="label-cell">Age / อายุอาคาร (ปี):</td><td>......${data.building_age || '-'}...... ปี / Year</td></tr>
+            <tr><td class="label-cell">Land use Plan / ที่ดิน:</td><td class="chk-mark">${chk(data.land_use_plan==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.land_use_plan==='No')} ไม่มี / No</td></tr>
+            <tr><td class="label-cell">Drawing / แบบแปลน:</td><td class="chk-mark">${chk(data.drawing==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.drawing==='No')} ไม่มี / No</td></tr>
+            <tr><td class="label-cell">Aor.1 / ใบอนุญาต อ.1:</td><td class="chk-mark">${chk(data.aor_1==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.aor_1==='No')} ไม่มี / No</td></tr>
+            <tr><td class="label-cell">Building Type / ประเภทอาคาร:</td><td class="chk-mark">
+                ${chk(data.building_type.includes('Warehouse'))} Warehouse / โกดัง &nbsp;&nbsp;
+                ${chk(data.building_type.includes('Factory'))} Factory / โรงงาน &nbsp;&nbsp;
+                ${chk(data.building_type.includes('Office'))} Office / ออฟฟิศ &nbsp;&nbsp;
+                ${chk(data.building_type.includes('Others'))} Others / อื่นๆ
             </td></tr>
         </table>
 
-        <div class="section-title">โครงสร้างและหลังคา (Roof &amp; Structure)</div>
+        <div class="section-title">Roof &amp; Structure (โครงสร้างและหลังคา)</div>
         <table class="data-table">
-            <tr><td class="label-cell">ประเภทหลังคา / Roof Type:</td><td class="chk-mark">
+            <tr><td class="label-cell">Roof Type / ประเภทหลังคา:</td><td class="chk-mark">
                 ${chk(data.roof_type==='Metal Sheet')} Metal Sheet &nbsp;&nbsp;
-                ${chk(data.roof_type==='Tile')} กระเบื้อง / Tile &nbsp;&nbsp;
-                ${chk(data.roof_type==='Concrete Slab')} พื้นปูน / Concrete Slab
+                ${chk(data.roof_type==='Tile')} Tile / กระเบื้อง &nbsp;&nbsp;
+                ${chk(data.roof_type==='Concrete Slab')} Concrete Slab / พื้นปูน
             </td></tr>
-            <tr><td class="label-cell">สนิมหรือการกัดกร่อน / Rust and Corrosion:</td><td class="chk-mark">
+            <tr><td class="label-cell">Rust and Corrosion / สนิมหรือการกัดกร่อน:</td><td class="chk-mark">
                 ${chk(data.rust_corrosion==='Good')} Good &nbsp;&nbsp;
                 ${chk(data.rust_corrosion==='Moderate')} Moderate &nbsp;&nbsp;
                 ${chk(data.rust_corrosion==='Severe')} Severe
             </td></tr>
-            <tr><td class="label-cell">สภาพของหลังคา / Roof Condition:</td><td class="chk-mark">
-                ${chk(data.roof_condition==='Not Required')} ไม่ต้องเปลี่ยน / Not Required &nbsp;&nbsp;
-                ${chk(data.roof_condition==='Needs Replacement')} ต้องเปลี่ยน / Needs Replacement
+            <tr><td class="label-cell">Roof Condition / สภาพของหลังคา:</td><td class="chk-mark">
+                ${chk(data.roof_condition==='Not Required')} Not Required / ไม่ต้องเปลี่ยน &nbsp;&nbsp;
+                ${chk(data.roof_condition==='Needs Replacement')} Needs Replacement / ต้องเปลี่ยน
             </td></tr>
-            <tr><td class="label-cell">เสริมโครงสร้าง / Structural Reinforcement:</td><td class="chk-mark">
-                ${chk(data.struct_reinforce==='Not Required')} ไม่ต้องเสริม / Not Required &nbsp;&nbsp;
-                ${chk(data.struct_reinforce==='Needed')} ต้องเสริม / Structural Reinforcement Needed<br>
-                ${chk(data.struct_reinforce==='Waiting Checking')} รอตรวจสอบ / Waiting EPC Checking Structure.
+            <tr><td class="label-cell">Structural Reinforcement / เสริมโครงสร้าง:</td><td class="chk-mark">
+                ${chk(data.struct_reinforce==='Not Required')} Not Required / ไม่ต้องเสริม &nbsp;&nbsp;
+                ${chk(data.struct_reinforce==='Needed')} Structural Reinforcement Needed / ต้องเสริม<br>
+                ${chk(data.struct_reinforce==='Waiting Checking')} Waiting EPC Checking Structure / รอตรวจสอบ.
             </td></tr>
         </table>
 
-        <div class="section-title">ระบบไฟฟ้า (Electrical System)</div>
+        <div class="section-title">Electrical System (ระบบไฟฟ้า)</div>
         <table class="data-table">
-            <tr><td class="label-cell">มิเตอร์ไฟฟ้า / Meter:</td><td>${data.meter_no}</td>
-                <td class="label-cell">รหัสเครื่องวัด / S/N:</td><td>${data.meter_sn}</td></tr>
-            <tr><td class="label-cell">AMR:</td><td class="chk-mark" colspan="3">${chk(data.amr==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.amr==='No')} ไม่มี / No</td></tr>
-            <tr><td class="label-cell">ระดับแรงดันไฟฟ้า / Voltage Level: (Zero export)</td><td class="chk-mark" colspan="3">${chk(data.voltage_level==='22kV')} 22kV &nbsp;&nbsp; ${chk(data.voltage_level==='400-230V')} 400-230V</td></tr>
-            <tr><td class="label-cell">ค่าเฉลี่ยการใช้ไฟฟ้า / Avg. Load:</td><td colspan="3">............ ${data.avg_load || ''} kW</td></tr>
+            <tr><td class="label-cell">Meter / มิเตอร์ไฟฟ้า:</td><td>${data.meter_no}</td>
+                <td class="label-cell">S/N / รหัสเครื่องวัด:</td><td>${data.meter_sn}</td></tr>
+            <tr><td class="label-cell">AMR:</td><td class="chk-mark" colspan="3">${chk(data.amr==='Yes')} Yes / มี &nbsp;&nbsp; ${chk(data.amr==='No')} No / ไม่มี</td></tr>
+            <tr><td class="label-cell">Voltage Level (Zero export) / ระดับแรงดันไฟฟ้า: (Zero export)</td><td class="chk-mark" colspan="3">${chk(data.voltage_level==='22kV')} 22kV &nbsp;&nbsp; ${chk(data.voltage_level==='400-230V')} 400-230V</td></tr>
+            <tr><td class="label-cell">Avg. Load (kW) / ค่าเฉลี่ยการใช้ไฟฟ้า:</td><td colspan="3">............ ${data.avg_load || ''} kW</td></tr>
         </table>
     `;
 
@@ -558,27 +558,33 @@ function generatePDF() {
     const page2Block = `
         ${pdfHeaderHTML(data)}
 
-        <div class="section-title">หม้อแปลง / TR:</div>
+        <div class="section-title">TR (หม้อแปลง):</div>
         ${numberedList(data.trList, 'kVA')}
         <div class="section-title">MDB / Main CB:</div>
         ${numberedList(data.mdbList, 'A')}
 
-        <div class="section-title">สภาพแวดล้อม (Site Conditions)</div>
+        <div class="section-title">Site Conditions (สภาพแวดล้อม)</div>
         <table class="data-table">
             <tr><td class="label-cell">มุมหลังคา / Roof Slope:</td><td class="chk-mark">
-                ${chk(data.roof_slope==='0-15°')} 0–15° &nbsp;&nbsp;
-                ${chk(data.roof_slope==='> 16°')} มากกว่า 16° &nbsp;&nbsp;
-                ${chk(data.roof_slope==='Others')} อื่นๆ / Others
+                ${chk(data.roof_slope==='< 8°')} < 8° &nbsp;&nbsp;
+                ${chk(data.roof_slope==='8-12°')} 8-12° &nbsp;&nbsp;
+                ${chk(data.roof_slope==='12-15°')} 12-15° &nbsp;&nbsp;
+                ${chk(data.roof_slope==='> 15°')} มากกว่า 15° &nbsp;&nbsp;
             </td></tr>
-            <tr><td class="label-cell">เงา / Shading:</td><td class="chk-mark">
-                ${chk(data.shading==='Yes')} มีเงา / Yes &nbsp;&nbsp; ${chk(data.shading==='No')} ไม่มีเงา / No
+            <tr><td class="label-cell">Environment/สภาพแวดล้อม:</td><td class="chk-mark">
+                ${chk(data.shading==='Good')} Good &nbsp;&nbsp; 
+                ${chk(data.shading==='Moderate')} Moderate &nbsp;&nbsp;
+                 ${chk(data.shading==='Severe')} Severe &nbsp;&nbsp;
             </td></tr>
-            <tr><td class="label-cell">ตำแหน่ง Inverter / Inverter Station:</td><td class="chk-mark">
-                ${chk(data.inverter_station==='Indoor')} ภายใน / Indoor &nbsp;&nbsp; ${chk(data.inverter_station==='Outdoor')} ภายนอก / Outdoor
+            <tr><td class="label-cell">Shading / เงา:</td><td class="chk-mark">
+                ${chk(data.shading==='Yes')} Yes / มีเงา &nbsp;&nbsp; ${chk(data.shading==='No')} No / ไม่มีเงา
+            </td></tr>
+            <tr><td class="label-cell">Inverter Location / ตำแหน่งอินเวอรืเตอร์:</td><td class="chk-mark">
+                ${chk(data.inverter_station==='Indoor')} Indoor / ภายใน &nbsp;&nbsp; ${chk(data.inverter_station==='Outdoor')} Outdoor / ภายนอก
             </td></tr>
         </table>
 
-        <div class="section-title">ข้อเสนอแนะ / Comments</div>
+        <div class="section-title">Comments / ข้อเสนอแนะ</div>
         <div class="comment-lines">
             ${(data.comments ? data.comments.split('\\n') : ['','','','']).map(line => `<div>${line}</div>`).join('')}
             ${!data.comments ? '<div></div><div></div>' : ''}
