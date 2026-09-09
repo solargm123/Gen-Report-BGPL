@@ -763,8 +763,14 @@ async function generateWord() {
     docChildren.push(new Paragraph({ children:[new TextRun({text:data.comments || '', size:18})], spacing:{after:200} }));
 
     docChildren.push(buildTable([
-        row2('Representative (EPC):', data.rep_epc, 50),
-        row2('Representative (BGPL):', data.rep_bgpl, 50)
+        row2('Representative (EPC):', data.rep_epc, 50, {
+        alignment: 'center',
+        bold: true
+    }),
+        row2('Representative (BGPL):', data.rep_bgpl, 50, {
+        alignment: 'center',
+        bold: true
+    })
     ]));
 
     // Photo pages (one page per section, max MAX_PHOTOS_PER_SECTION photos each)
