@@ -1,327 +1,615 @@
 <!DOCTYPE html>
+
 <html lang="th">
+
 <head>
+
     <!-- Google Fonts: Bai Jamjuree -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Solar Survey Report Generator</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+
         body { font-family: 'Bai Jamjuree', sans-serif; background-color: #f8fafc; }
+
         .section-card {
+
             background: #fff; border-radius: 10px; border: 1px solid #e2e8f0;
+
             box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; padding: 20px;
+
         }
+
         .form-label { font-weight: 600; color: #1e293b; margin-bottom: 4px; display: block; font-size: 0.875rem; }
+
         .form-input, .form-select, .form-textarea {
+
             width: 100%; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;
+
         }
+
         .form-input:focus, .form-select:focus, .form-textarea:focus {
+
             outline: none; border-color: #0284c7; box-shadow: 0 0 0 2px rgba(2,132,199,0.2);
+
         }
+
         .chk-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
         .chk-item { display: flex; align-items: center; gap: 4px; font-size: 0.85rem; cursor: pointer; }
+
         .chk-item input { width: 15px; height: 15px; }
 
+
+
         /* ---- PDF PREVIEW / PRINT STYLES (mirrors SR-Customer-EPC) ---- */
+
         .pdf-doc { color: #000; font-size: 11.5px; }
+
         .pdf-block {
+
             background: #fff; width: 210mm; padding: 14mm 15mm;
+
             margin: 0 auto; box-sizing: border-box;
+
         }
+
         .pdf-block.page-break { page-break-after: always; }
+
         .pdf-header {
+
             display: flex; justify-content: space-between; align-items: flex-start;
+
             margin-bottom: 6px;
+
         }
+
         .pdf-header h1 { font-size: 20px; font-weight: 700; font-family: 'Sarabun', sans-serif; margin: 0; }
+
         .pdf-header .logo img { height: 34px; width: auto; display: block; }
+
         .pdf-header-no { color: #dc2626; font-weight: 700; font-size: 12px; margin-top: 2px; }
+
         .pdf-date { font-size: 12px; margin-bottom: 10px; }
+
         .section-title {
+
             font-weight: 700; font-size: 12.5px; margin: 12px 0 6px 0;
+
         }
+
         table.data-table {
+
             width: 100%; border-collapse: collapse; margin-bottom: 4px;
+
         }
+
         table.data-table td {
+
             border: 1px solid #000; padding: 5px 8px; vertical-align: top; font-size: 11.5px;
+
         }
+
         td.label-cell { width: 34%; }
+
         .chk-mark { font-size: 12px; letter-spacing: 0.5px; }
+
         .section-header-bar {
+
             border: 1px solid #000; font-weight: 700; text-align: center;
+
             padding: 6px; font-size: 12.5px; margin-top: 0;
+
         }
+
         table.photo-grid-table { width: 100%; border-collapse: collapse; }
+
         table.photo-grid-table td {
+
             border: 1px solid #000; width: 50%; vertical-align: middle; text-align: center; padding: 6px;
+
         }
+
         table.photo-grid-table td.caption-cell {
+
             font-size: 11px; padding: 4px 6px; height: 22px;
+
         }
+
         table.photo-grid-table img {
+
             max-width: 100%; max-height: 190px; object-fit: contain; display: block; margin: 0 auto;
+
         }
+
         .sign-table td { height: 60px; }
+
         .comment-lines div { border-bottom: 1px solid #000; height: 22px; }
+
         #pdfRenderArea { display: none; }
+
     </style>
+
 </head>
+
 <body class="p-4 md:p-8">
 
+
+
 <div class="max-w-6xl mx-auto">
+
     <div class="bg-slate-900 text-white p-5 rounded-xl shadow-lg mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+
         <div>
+
             <h1 class="text-2xl font-bold flex items-center gap-2">
+
                 <i class="fa-solid fa-solar-panel text-amber-400"></i> Solar Survey Report Generator
+
             </h1>
+
             <p class="text-slate-300 text-xs mt-1">แบบฟอร์มตามรูปแบบมาตรฐาน (SR-Customer-EPC)</p>
+
         </div>
+
         <div class="flex gap-3">
+
             <button onclick="generateWord()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition shadow flex items-center gap-2">
+
                 <i class="fa-solid fa-file-word"></i> Export Word (.docx)
+
             </button>
+
             <button onclick="generatePDF()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition shadow flex items-center gap-2">
+
                 <i class="fa-solid fa-file-pdf"></i> Export PDF
+
             </button>
+
         </div>
+
     </div>
 
+
+
     <form id="surveyForm" onsubmit="return false;">
+
         <!-- Report Meta -->
+
         <div class="section-card border-l-4 border-l-amber-500">
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
                 <div>
+
                     <label class="form-label">Header No.</label>
+
                     <input type="text" id="header_no" class="form-input" value="SR-Customer-EPC">
+
                 </div>
+
                 <div>
+
                     <label class="form-label">Date / วันที่</label>
+
                     <input type="date" id="report_date" class="form-input">
+
                 </div>
+
                 <div>
+
                     <label class="form-label">Company Logo Text / ชื่อหัวเอกสาร</label>
+
                     <input type="text" id="header_title" class="form-input" value="Solar Survey Report">
+
                 </div>
+
             </div>
+
         </div>
+
+
 
         <!-- 1. General Information -->
+
         <div class="section-card">
+
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-address-card text-sky-600"></i> ข้อมูลทั่วไป (General Information)</h2>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                 <div><label class="form-label">Site Name / ลูกค้า</label><input type="text" id="site_name" class="form-input"></div>
+
                 <div><label class="form-label">Site Location / สถานที่</label><input type="text" id="site_location" class="form-input"></div>
-                <div class="md:col-span-2"><label class="form-label">La, Longitude / พิกัด</label><input type="text" id="coordinates" class="form-input"></div>
-                <div><label class="form-label">Business / ธุรกิจ</label><input type="text" id="business" class="form-input"></div>
+
+                <div class="md:col-span-2"><label class="form-label">La, Longitude / พิกัด</label><input type="number" id="coordinates" class="form-input"></div>
+
+                <div><label class="form-label">Business / ธุระกิจ</label><input type="text" id="business" class="form-input"></div>
+
                 <div class="grid grid-cols-2 gap-2">
+
                     <div><label class="form-label">Contact / ผู้ติดต่อ</label><input type="text" id="contact_name" class="form-input"></div>
-                    <div><label class="form-label">Phone / เบอร์ติดต่อ</label><input type="text" id="contact_number" class="form-input"></div>
+
+                    <div><label class="form-label">Phone / เบอร์ติดต่อ</label><input type="number" id="contact_number" class="form-input"></div>
+
                 </div>
+
             </div>
+
         </div>
+
+
 
         <!-- 2. Building Information -->
+
         <div class="section-card">
+
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-building text-sky-600"></i> ข้อมูลอาคาร (Building Information)</h2>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                 <div><label class="form-label">Building Age / อายุอาคาร (ปี)</label><input type="number" id="building_age" class="form-input"></div>
+
                 <div>
+
                     <label class="form-label">Land use Plan / ที่ดิน</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="land_use_plan" value="Yes" checked> Yes / มี</label>
+
                         <label class="chk-item"><input type="radio" name="land_use_plan" value="No"> No / ไม่มี</label>
+
                     </div>
+
                 </div>
+
                 <div>
+
                     <label class="form-label">Drawing / แบบแปลน</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="drawing" value="Yes" checked> Yes / มี</label>
+
                         <label class="chk-item"><input type="radio" name="drawing" value="No"> No / ไม่มี</label>
+
                     </div>
+
                 </div>
+
                 <div>
+
                     <label class="form-label">Aor.1 / ใบอนุญาต อ.1</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="aor_1" value="Yes" checked> Yes / มี</label>
+
                         <label class="chk-item"><input type="radio" name="aor_1" value="No"> No / ไม่มี</label>
+
                     </div>
+
                 </div>
+
                 <div class="md:col-span-2">
+
                     <label class="form-label">Building Type / ประเภทอาคาร</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="checkbox" name="building_type" value="Warehouse"> Warehouse / โกดัง</label>
+
                         <label class="chk-item"><input type="checkbox" name="building_type" value="Factory"> Factory / โรงงาน</label>
+
                         <label class="chk-item"><input type="checkbox" name="building_type" value="Office"> Office / ออฟฟิศ</label>
+
                         <label class="chk-item"><input type="checkbox" name="building_type" value="Others"> Others / อื่นๆ</label>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
+
 
         <!-- 3. Roof & Structure -->
+
         <div class="section-card">
+
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-layer-group text-sky-600"></i> โครงสร้างและหลังคา (Roof &amp; Structure)</h2>
+
             <div class="grid grid-cols-1 gap-4">
+
                 <div>
+
                     <label class="form-label">Roof Type / ประเภทหลังคา</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="roof_type" value="Metal Sheet" checked> Metal Sheet</label>
+
                         <label class="chk-item"><input type="radio" name="roof_type" value="Tile"> Tile / กระเบื้อง</label>
+
                         <label class="chk-item"><input type="radio" name="roof_type" value="Concrete Slab"> Concrete Slab / พื้นปูน</label>
+
                     </div>
+
                 </div>
+
                 <div>
+
                     <label class="form-label">Rust and Corrosion / สนิมหรือการกัดกร่อน</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="rust_corrosion" value="Good" checked> Good</label>
+
                         <label class="chk-item"><input type="radio" name="rust_corrosion" value="Moderate"> Moderate</label>
+
                         <label class="chk-item"><input type="radio" name="rust_corrosion" value="Severe"> Severe</label>
+
                     </div>
+
                 </div>
+
                 <div>
+
                     <label class="form-label">Roof Condition / สภาพของหลังคา</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="roof_condition" value="Not Required" checked> Not Required / ไม่ต้องเปลี่ยน</label>
+
                         <label class="chk-item"><input type="radio" name="roof_condition" value="Needs Replacement"> Needs Replacement / ต้องเปลี่ยน</label>
+
                     </div>
+
                 </div>
+
                 <div>
-                    <label class="form-label">Structural Reinforcement / เสริมโครงสร้าง</label>
+
+                    <label class="form-label">Structural Reinforcement / Structural Reinforcementเสริมโครงสร้าง</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="struct_reinforce" value="Not Required" checked> Not Required / ไม่ต้องเสริม</label>
+
                         <label class="chk-item"><input type="radio" name="struct_reinforce" value="Needed"> Structural Reinforcement Needed / ต้องเสริม</label>
-                        <label class="chk-item"><input type="radio" name="struct_reinforce" value="Waiting Checking"> Waiting EPC Checking Structure / รอตรวจสอบ</label>
+
+                        <label class="chk-item"><input type="radio" name="struct_reinforce" value="Waiting Checking"> Waiting EPC Checking Structure / รอตรวจสอ</label>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
+
 
         <!-- 4. Electrical System -->
+
         <div class="section-card">
+
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-bolt text-amber-500"></i> Electrical System (ระบบไฟฟ้า)</h2>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
                 <div><label class="form-label">Meter / มิเตอร์ไฟฟ้า</label><input type="text" id="meter_no" class="form-input"></div>
+
                 <div><label class="form-label">S/N / รหัสเครื่องวัด</label><input type="text" id="meter_sn" class="form-input"></div>
+
             </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                 <div>
+
                     <label class="form-label">AMR</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="amr" value="Yes"> Yes / มี</label>
+
                         <label class="chk-item"><input type="radio" name="amr" value="No" checked> No / ไม่มี</label>
+
                     </div>
+
                 </div>
+
                 <div>
+
                     <label class="form-label">Voltage Level (Zero export) / ระดับแรงดันไฟฟ้า</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="voltage_level" value="22kV" checked> 22kV</label>
+
                         <label class="chk-item"><input type="radio" name="voltage_level" value="400-230V"> 400-230V</label>
+
                     </div>
+
                 </div>
+
                 <div><label class="form-label">Avg. Load (kW) / ค่าเฉลี่ยการใช้ไฟฟ้า</label><input type="number" id="avg_load" class="form-input"></div>
+
             </div>
+
         </div>
+
+
 
         <!-- 5. TR & MDB -->
+
         <div class="section-card">
+
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-plug-circle-bolt text-amber-500"></i> TR (หม้อแปลง) &amp; MDB / Main CB</h2>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
                 <div>
+
                     <h3 class="font-bold text-slate-700 text-sm mb-2">หม้อแปลงTR (kVA) / หม้อแปลง</h3>
+
                     <div class="grid grid-cols-2 gap-2" id="trInputs"></div>
+
                 </div>
+
                 <div>
+
                     <h3 class="font-bold text-slate-700 text-sm mb-2">MDB / Main CB (A)</h3>
+
                     <div class="grid grid-cols-2 gap-2" id="mdbInputs"></div>
+
                 </div>
+
             </div>
+
         </div>
+
+
 
         <!-- 6. Site Conditions -->
+
         <div class="section-card">
+
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-sun text-amber-500"></i> Site Conditions (สภาพแวดล้อม) &amp; Sign / ลงนาม</h2>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
                 <div>
+
                     <label class="form-label">Roof Slope / มุมหลังคา</label>
+
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="roof_slope" value="<8°" checked> &lt;8°</label>
-                        <label class="chk-item"><input type="radio" name="roof_slope" value="8-12°"> 8-12°</label>
-                        <label class="chk-item"><input type="radio" name="roof_slope" value="12-15°"> 12-15°</label>
-                        <label class="chk-item"><input type="radio" name="roof_slope" value=">15°"> &gt;15°</label>
+
+                        <label class="chk-item"><input type="radio" name="roof_slope" value="<8°" checked> <8°</label>
+
+                        <label class="chk-item"><input type="radio" name="roof_slope" value="8-12°" checked> 8-12°</label>
+
+                        <label class="chk-item"><input type="radio" name="roof_slope" value="12-15°" checked> 12-15°</label>
+
+                        <label class="chk-item"><input type="radio" name="roof_slope" value=">15°" checked> >15°</label>
+
                     </div>
+
                 </div>
-                <div><label class="form-label">Shape of Roof / รูปแบบหลังคา</label><input type="text" id="Shape_of_Roof" class="form-input"></div>
+
+                    <div><label class="form-label">Shape of Roof / รูปเเบบหลังคา</label><input type="text" id="Shape_of_Roof" class="form-input"></div>
+
                 <div>
-                    <label class="form-label">Environment / สภาพแวดล้อม</label>
+
+                     <label class="form-label">Environment/สภาพแวดล้อม</label>
+
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="Environment" value="Good"> Good</label>
-                        <label class="chk-item"><input type="radio" name="Environment" value="Moderate" checked> Moderate</label>
-                        <label class="chk-item"><input type="radio" name="Environment" value="Severe"> Severe</label>
+
+                        <label class="chk-item"><input type="radio" name="Environment" value="Yes"> Good</label>
+
+                        <label class="chk-item"><input type="radio" name="Environment" value="No" checked> Moderate</label>
+
+                        <label class="chk-item"><input type="radio" name="Environment" value="No" checked> Severe</label>
+
                     </div>
+
                 </div>
+
                 <div>
+
                     <label class="form-label">Shading / เงา</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="shading" value="Yes"> Yes / มีเงา</label>
+
                         <label class="chk-item"><input type="radio" name="shading" value="No" checked> No / ไม่มีเงา</label>
+
                     </div>
+
                 </div>
+
                 <div>
-                    <label class="form-label">Inverter Location / ตำแหน่งอินเวอร์เตอร์</label>
+
+                    <label class="form-label">Inverter Location / ตำแหน่งอินเวอรืเตอร์</label>
+
                     <div class="chk-group">
+
                         <label class="chk-item"><input type="radio" name="inverter_station" value="Indoor" checked> Indoor / ภายใน</label>
+
                         <label class="chk-item"><input type="radio" name="inverter_station" value="Outdoor"> Outdoor / ภายนอก</label>
+
                     </div>
+
                 </div>
+
             </div>
+
             <div class="mt-4">
+
                 <label class="form-label">Comments / ข้อเสนอแนะ</label>
+
                 <textarea id="comments" rows="3" class="form-textarea"></textarea>
+
             </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+
                 <div><label class="form-label">Representative (EPC)</label><input type="text" id="rep_epc" class="form-input"></div>
+
                 <div><label class="form-label">Representative (BGPL)</label><input type="text" id="rep_bgpl" class="form-input"></div>
+
             </div>
+
         </div>
 
+
+
         <!-- 7. Photo Sections -->
+
         <div class="section-card">
+
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-images text-indigo-600"></i> จัดการตารางรูปภาพ (Photo Grid - 2 Column Table)</h2>
+
             <div id="photoSectionsContainer"></div>
+
         </div>
+
     </form>
+
 </div>
+
+
 
 <div id="pdfRenderArea"></div>
 
+
+
 <script>
-// --- Initialize Dynamic TR & MDB Inputs ---
-const trContainer = document.getElementById('trInputs');
-const mdbContainer = document.getElementById('mdbInputs');
 
-for (let i = 1; i <= 4; i++) {
-    trContainer.innerHTML += `<div><label class="text-xs text-slate-500 font-medium">TR${i}</label><input type="text" id="tr_${i}" class="form-input"></div>`;
-    mdbContainer.innerHTML += `<div><label class="text-xs text-slate-500 font-medium">MDB${i}</label><input type="text" id="mdb_${i}" class="form-input"></div>`;
-}
-
-// --- Placeholder Export Functions ---
-function generateWord() {
-    alert("ระบบกำลังพัฒนาการ Export เป็นไฟล์ Word (.docx)");
-}
-
-function generatePDF() {
-    alert("ระบบกำลังพัฒนาการ Export เป็นไฟล์ PDF");
-}
-</script>
-</body>
-</html>
+const ASK_LOGO_BASE64 = "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 
