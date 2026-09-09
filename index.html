@@ -687,7 +687,7 @@ async function generateWord() {
         row2('ผู้ติดต่อ / เบอร์ติดต่อ:', `${data.contact_name}  ${data.contact_number}`)
     ]));
 
-    docChildren.push(sectionTitle('ข้อมูลอาคาร (Building Information)'));
+    docChildren.push(sectionTitle('ข้อมูลอาคาร (Building Informationข้อมูลอาคาร)'));
     docChildren.push(buildTable([
         row2('อายุอาคาร / Building Age:', `${data.building_age || '-'} ปี / Year`),
         row2('ที่ดิน / Land use Plan:', `${c(data.land_use_plan==='Yes')} มี / Yes   ${c(data.land_use_plan==='No')} ไม่มี / No`),
