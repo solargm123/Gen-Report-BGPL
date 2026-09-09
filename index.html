@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <!-- Google Fonts: Bai Jamjuree & Sarabun -->
+    <!-- Google Fonts: Bai Jamjuree -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solar Survey Report Generator</title>
@@ -14,6 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Bai Jamjuree', sans-serif; background-color: #f8fafc; }
         .section-card {
             background: #fff; border-radius: 10px; border: 1px solid #e2e8f0;
@@ -30,52 +31,54 @@
         .chk-item { display: flex; align-items: center; gap: 4px; font-size: 0.85rem; cursor: pointer; }
         .chk-item input { width: 15px; height: 15px; }
 
-        /* ---- PDF PREVIEW / PRINT STYLES ---- */
-        .pdf-doc { color: #000; font-size: 11px; font-family: 'Sarabun', sans-serif; line-height: 1.3; }
+        /* ---- PDF PREVIEW / PRINT STYLES (mirrors SR-Customer-EPC) ---- */
+        .pdf-doc { color: #000; font-size: 11.5px; }
         .pdf-block {
-            background: #fff; width: 210mm; min-height: 297mm; padding: 12mm 15mm;
-            margin: 0 auto; box-sizing: border-box; page-break-after: always;
+            background: #fff; width: 210mm; padding: 14mm 15mm;
+            margin: 0 auto; box-sizing: border-box;
         }
+        .pdf-block.page-break { page-break-after: always; }
         .pdf-header {
             display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 8px; border-bottom: 2px solid #000; padding-bottom: 6px;
+            margin-bottom: 6px;
         }
-        .pdf-header h1 { font-size: 18px; font-weight: 700; margin: 0; }
-        .pdf-header-no { color: #dc2626; font-weight: 700; font-size: 12px; text-align: right; }
-        .pdf-date { font-size: 11px; text-align: right; font-weight: 600; }
-        
+        .pdf-header h1 { font-size: 20px; font-weight: 700; font-family: 'Sarabun', sans-serif; margin: 0; }
+        .pdf-header .logo img { height: 34px; width: auto; display: block; }
+        .pdf-header-no { color: #dc2626; font-weight: 700; font-size: 12px; margin-top: 2px; }
+        .pdf-date { font-size: 12px; margin-bottom: 10px; }
+        .section-title {
+            font-weight: 700; font-size: 12.5px; margin: 12px 0 6px 0;
+        }
         table.data-table {
-            width: 100%; border-collapse: collapse; margin-bottom: 10px;
+            width: 100%; border-collapse: collapse; margin-bottom: 4px;
         }
         table.data-table td {
-            border: 1px solid #000; padding: 4px 6px; vertical-align: middle; font-size: 11px;
+            border: 1px solid #000; padding: 5px 8px; vertical-align: top; font-size: 11.5px;
         }
-        td.label-cell { width: 30%; font-weight: 600; background-color: #f1f5f9; }
-        .chk-mark { font-weight: bold; }
-        .chk-mark.checked { color: #0284c7; }
-        
+        td.label-cell { width: 34%; }
+        .chk-mark { font-size: 12px; letter-spacing: 0.5px; }
         .section-header-bar {
-            background: #e2e8f0; border: 1px solid #000; font-weight: 700; text-align: center;
-            padding: 4px; font-size: 12px; margin-top: 10px; margin-bottom: 4px;
+            border: 1px solid #000; font-weight: 700; text-align: center;
+            padding: 6px; font-size: 12.5px; margin-top: 0;
         }
-        table.photo-grid-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        table.photo-grid-table { width: 100%; border-collapse: collapse; }
         table.photo-grid-table td {
-            border: 1px solid #000; width: 50%; vertical-align: middle; text-align: center; padding: 4px;
+            border: 1px solid #000; width: 50%; vertical-align: middle; text-align: center; padding: 6px;
         }
         table.photo-grid-table td.caption-cell {
-            font-size: 10.5px; padding: 3px; background-color: #f8fafc; font-weight: 600;
+            font-size: 11px; padding: 4px 6px; height: 22px;
         }
         table.photo-grid-table img {
-            max-width: 100%; height: 140px; object-fit: contain; display: block; margin: 0 auto;
+            max-width: 100%; max-height: 190px; object-fit: contain; display: block; margin: 0 auto;
         }
-        .sign-table td { height: 50px; text-align: center; vertical-align: bottom; }
+        .sign-table td { height: 60px; }
+        .comment-lines div { border-bottom: 1px solid #000; height: 22px; }
         #pdfRenderArea { display: none; }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
 <div class="max-w-6xl mx-auto">
-    <!-- Header Bar -->
     <div class="bg-slate-900 text-white p-5 rounded-xl shadow-lg mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
             <h1 class="text-2xl font-bold flex items-center gap-2">
@@ -293,28 +296,16 @@
 
         <!-- 7. Photo Sections -->
         <div class="section-card">
-            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-images text-indigo-600"></i> จัดการรูปภาพสำรวจ (Photos)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="border p-3 rounded-lg">
-                    <label class="form-label">รูปภาพที่ 1</label>
-                    <input type="file" id="img_file_1" accept="image/*" class="form-input mb-2" onchange="previewImage(1)">
-                    <input type="text" id="img_cap_1" class="form-input" placeholder="คำอธิบายรูปที่ 1">
-                </div>
-                <div class="border p-3 rounded-lg">
-                    <label class="form-label">รูปภาพที่ 2</label>
-                    <input type="file" id="img_file_2" accept="image/*" class="form-input mb-2" onchange="previewImage(2)">
-                    <input type="text" id="img_cap_2" class="form-input" placeholder="คำอธิบายรูปที่ 2">
-                </div>
-            </div>
+            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-images text-indigo-600"></i> จัดการตารางรูปภาพ (Photo Grid - 2 Column Table)</h2>
+            <div id="photoSectionsContainer"></div>
         </div>
     </form>
 </div>
 
-<!-- PDF Export Render Container -->
 <div id="pdfRenderArea"></div>
 
 <script>
-// --- 1. Init Form Controls ---
+// --- Initialize Dynamic TR & MDB Inputs ---
 const trContainer = document.getElementById('trInputs');
 const mdbContainer = document.getElementById('mdbInputs');
 
@@ -323,272 +314,13 @@ for (let i = 1; i <= 4; i++) {
     mdbContainer.innerHTML += `<div><label class="text-xs text-slate-500 font-medium">MDB${i}</label><input type="text" id="mdb_${i}" class="form-input"></div>`;
 }
 
-// Default today's date
-document.getElementById('report_date').valueAsDate = new Date();
-
-let imageDataArr = ['', ''];
-
-function previewImage(index) {
-    const file = document.getElementById(`img_file_${index}`).files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            imageDataArr[index - 1] = e.target.result;
-        }
-        reader.readAsDataURL(file);
-    }
-}
-
-// --- 2. Data Mapping Helper ---
-function getFormData() {
-    const getVal = id => document.getElementById(id)?.value || '-';
-    const getRadio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '-';
-    const getCheckboxes = name => {
-        const vals = Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
-        return vals.length > 0 ? vals.join(', ') : '-';
-    };
-
-    return {
-        headerNo: getVal('header_no'),
-        reportDate: getVal('report_date'),
-        headerTitle: getVal('header_title'),
-        siteName: getVal('site_name'),
-        siteLocation: getVal('site_location'),
-        coordinates: getVal('coordinates'),
-        business: getVal('business'),
-        contactName: getVal('contact_name'),
-        contactNumber: getVal('contact_number'),
-        buildingAge: getVal('building_age'),
-        landUsePlan: getRadio('land_use_plan'),
-        drawing: getRadio('drawing'),
-        aor1: getRadio('aor_1'),
-        buildingType: getCheckboxes('building_type'),
-        roofType: getRadio('roof_type'),
-        rustCorrosion: getRadio('rust_corrosion'),
-        roofCondition: getRadio('roof_condition'),
-        structReinforce: getRadio('struct_reinforce'),
-        meterNo: getVal('meter_no'),
-        meterSn: getVal('meter_sn'),
-        amr: getRadio('amr'),
-        voltageLevel: getRadio('voltage_level'),
-        avgLoad: getVal('avg_load'),
-        tr1: getVal('tr_1'), tr2: getVal('tr_2'), tr3: getVal('tr_3'), tr4: getVal('tr_4'),
-        mdb1: getVal('mdb_1'), mdb2: getVal('mdb_2'), mdb3: getVal('mdb_3'), mdb4: getVal('mdb_4'),
-        roofSlope: getRadio('roof_slope'),
-        shapeOfRoof: getVal('Shape_of_Roof'),
-        environment: getRadio('Environment'),
-        shading: getRadio('shading'),
-        inverterStation: getRadio('inverter_station'),
-        comments: getVal('comments'),
-        repEpc: getVal('rep_epc'),
-        repBgpl: getVal('rep_bgpl'),
-        imgCap1: getVal('img_cap_1'),
-        imgCap2: getVal('img_cap_2')
-    };
-}
-
-// Helper to format radio options display for PDF/Word
-function renderRadioGroup(options, selectedValue) {
-    return options.map(opt => {
-        const isSelected = opt === selectedValue;
-        return `<span class="chk-mark ${isSelected ? 'checked' : ''}">[${isSelected ? '✓' : '  '}] ${opt}</span>`;
-    }).join('&nbsp;&nbsp;');
-}
-
-// --- 3. Generate HTML Template for Export ---
-function buildExportHTML(data) {
-    return `
-    <div class="pdf-doc">
-        <div class="pdf-block">
-            <div class="pdf-header">
-                <div>
-                    <h1>${data.headerTitle}</h1>
-                </div>
-                <div>
-                    <div class="pdf-header-no">No. ${data.headerNo}</div>
-                    <div class="pdf-date">Date: ${data.reportDate}</div>
-                </div>
-            </div>
-
-            <div class="section-header-bar">1. GENERAL INFORMATION</div>
-            <table class="data-table">
-                <tr><td class="label-cell">Site Name / ลูกค้า</td><td>${data.siteName}</td></tr>
-                <tr><td class="label-cell">Site Location / สถานที่</td><td>${data.siteLocation}</td></tr>
-                <tr><td class="label-cell">La, Longitude / พิกัด</td><td>${data.coordinates}</td></tr>
-                <tr><td class="label-cell">Business / ธุรกิจ</td><td>${data.business}</td></tr>
-                <tr><td class="label-cell">Contact / เบอร์ติดต่อ</td><td>${data.contactName} (${data.contactNumber})</td></tr>
-            </table>
-
-            <div class="section-header-bar">2. BUILDING INFORMATION</div>
-            <table class="data-table">
-                <tr><td class="label-cell">Building Age / อายุอาคาร</td><td>${data.buildingAge} ปี</td></tr>
-                <tr><td class="label-cell">Land use Plan / ที่ดิน</td><td>${renderRadioGroup(['Yes', 'No'], data.landUsePlan)}</td></tr>
-                <tr><td class="label-cell">Drawing / แบบแปลน</td><td>${renderRadioGroup(['Yes', 'No'], data.drawing)}</td></tr>
-                <tr><td class="label-cell">Aor.1 / ใบอนุญาต อ.1</td><td>${renderRadioGroup(['Yes', 'No'], data.aor1)}</td></tr>
-                <tr><td class="label-cell">Building Type / ประเภทอาคาร</td><td>${data.buildingType}</td></tr>
-            </table>
-
-            <div class="section-header-bar">3. ROOF & STRUCTURE</div>
-            <table class="data-table">
-                <tr><td class="label-cell">Roof Type / หลังคา</td><td>${renderRadioGroup(['Metal Sheet', 'Tile', 'Concrete Slab'], data.roofType)}</td></tr>
-                <tr><td class="label-cell">Rust & Corrosion / สนิม</td><td>${renderRadioGroup(['Good', 'Moderate', 'Severe'], data.rustCorrosion)}</td></tr>
-                <tr><td class="label-cell">Roof Condition / สภาพ</td><td>${renderRadioGroup(['Not Required', 'Needs Replacement'], data.roofCondition)}</td></tr>
-                <tr><td class="label-cell">Reinforcement / โครงสร้าง</td><td>${renderRadioGroup(['Not Required', 'Needed', 'Waiting Checking'], data.structReinforce)}</td></tr>
-            </table>
-
-            <div class="section-header-bar">4. ELECTRICAL SYSTEM</div>
-            <table class="data-table">
-                <tr><td class="label-cell">Meter / S/N</td><td>${data.meterNo} / ${data.meterSn}</td></tr>
-                <tr><td class="label-cell">AMR</td><td>${renderRadioGroup(['Yes', 'No'], data.amr)}</td></tr>
-                <tr><td class="label-cell">Voltage Level</td><td>${renderRadioGroup(['22kV', '400-230V'], data.voltageLevel)}</td></tr>
-                <tr><td class="label-cell">Avg. Load (kW)</td><td>${data.avgLoad} kW</td></tr>
-                <tr><td class="label-cell">TR (kVA)</td><td>TR1: ${data.tr1} | TR2: ${data.tr2} | TR3: ${data.tr3} | TR4: ${data.tr4}</td></tr>
-                <tr><td class="label-cell">MDB / Main CB (A)</td><td>MDB1: ${data.mdb1} | MDB2: ${data.mdb2} | MDB3: ${data.mdb3} | MDB4: ${data.mdb4}</td></tr>
-            </table>
-
-            <div class="section-header-bar">5. SITE CONDITIONS & SIGN</div>
-            <table class="data-table">
-                <tr><td class="label-cell">Roof Slope / รูปแบบ</td><td>${data.roofSlope} (รูปแบบ: ${data.shapeOfRoof})</td></tr>
-                <tr><td class="label-cell">Environment / Shading</td><td>สภาพ: ${data.environment} | บดบังเงา: ${data.shading}</td></tr>
-                <tr><td class="label-cell">Inverter Location</td><td>${renderRadioGroup(['Indoor', 'Outdoor'], data.inverterStation)}</td></tr>
-                <tr><td class="label-cell">Comments / ข้อเสนอแนะ</td><td>${data.comments}</td></tr>
-            </table>
-
-            <!-- Photo Grid -->
-            <div class="section-header-bar">6. SURVEY PHOTOS</div>
-            <table class="photo-grid-table">
-                <tr>
-                    <td>${imageDataArr[0] ? `<img src="${imageDataArr[0]}"/>` : 'ไม่มีรูปภาพ'}</td>
-                    <td>${imageDataArr[1] ? `<img src="${imageDataArr[1]}"/>` : 'ไม่มีรูปภาพ'}</td>
-                </tr>
-                <tr>
-                    <td class="caption-cell">${data.imgCap1 || '-'}</td>
-                    <td class="caption-cell">${data.imgCap2 || '-'}</td>
-                </tr>
-            </table>
-
-            <!-- Signature Table -->
-            <table class="data-table sign-table" style="margin-top: 15px;">
-                <tr>
-                    <td style="width:50%;">
-                        <div>________________________</div>
-                        <div>(${data.repEpc})</div>
-                        <div>Representative (EPC)</div>
-                    </td>
-                    <td style="width:50%;">
-                        <div>________________________</div>
-                        <div>(${data.repBgpl})</div>
-                        <div>Representative (BGPL)</div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>`;
-}
-
-// --- 4. Export Handlers ---
-function generatePDF() {
-    const data = getFormData();
-    const renderArea = document.getElementById('pdfRenderArea');
-    renderArea.style.display = 'block';
-    renderArea.innerHTML = buildExportHTML(data);
-
-    const opt = {
-        margin:       0,
-        filename:     `Solar_Survey_Report_${data.siteName || 'Draft'}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(renderArea).save().then(() => {
-        renderArea.style.display = 'none';
-    });
-}
-
+// --- Placeholder Export Functions ---
 function generateWord() {
-    const data = getFormData();
-    const docxObj = window.docx;
-    if (!docxObj) {
-        alert("docx library ใช้งานไม่ได้ในขณะนี้");
-        return;
-    }
+    alert("ระบบกำลังพัฒนาการ Export เป็นไฟล์ Word (.docx)");
+}
 
-    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType } = docxObj;
-
-    const createRow = (label, value) => new TableRow({
-        children: [
-            new TableCell({ width: { size: 30, type: WidthType.PERCENTAGE }, children: [new Paragraph({ children: [new TextRun({ text: label, bold: true })] })] }),
-            new TableCell({ width: { size: 70, type: WidthType.PERCENTAGE }, children: [new Paragraph(value)] })
-        ]
-    });
-
-    const doc = new Document({
-        sections: [{
-            properties: {},
-            children: [
-                new Paragraph({ children: [new TextRun({ text: data.headerTitle, bold: true, size: 32 })] }),
-                new Paragraph({ children: [new TextRun({ text: `Header No: ${data.headerNo} | Date: ${data.reportDate}`, bold: true })] }),
-                
-                new Paragraph({ children: [new TextRun({ text: "1. GENERAL INFORMATION", bold: true, size: 24 })] }),
-                new Table({
-                    width: { size: 100, type: WidthType.PERCENTAGE },
-                    rows: [
-                        createRow("Site Name", data.siteName),
-                        createRow("Site Location", data.siteLocation),
-                        createRow("Coordinates", data.coordinates),
-                        createRow("Business", data.business),
-                        createRow("Contact", `${data.contactName} (${data.contactNumber})`)
-                    ]
-                }),
-
-                new Paragraph({ children: [new TextRun({ text: "2. BUILDING INFORMATION", bold: true, size: 24 })] }),
-                new Table({
-                    width: { size: 100, type: WidthType.PERCENTAGE },
-                    rows: [
-                        createRow("Building Age", `${data.buildingAge} ปี`),
-                        createRow("Land use Plan", data.landUsePlan),
-                        createRow("Drawing", data.drawing),
-                        createRow("Aor.1", data.aor1),
-                        createRow("Building Type", data.buildingType)
-                    ]
-                }),
-
-                new Paragraph({ children: [new TextRun({ text: "3. ROOF & STRUCTURE", bold: true, size: 24 })] }),
-                new Table({
-                    width: { size: 100, type: WidthType.PERCENTAGE },
-                    rows: [
-                        createRow("Roof Type", data.roofType),
-                        createRow("Rust & Corrosion", data.rustCorrosion),
-                        createRow("Roof Condition", data.roofCondition),
-                        createRow("Reinforcement", data.structReinforce)
-                    ]
-                }),
-
-                new Paragraph({ children: [new TextRun({ text: "4. ELECTRICAL SYSTEM", bold: true, size: 24 })] }),
-                new Table({
-                    width: { size: 100, type: WidthType.PERCENTAGE },
-                    rows: [
-                        createRow("Meter / S/N", `${data.meterNo} / ${data.meterSn}`),
-                        createRow("AMR", data.amr),
-                        createRow("Voltage Level", data.voltageLevel),
-                        createRow("Avg. Load", `${data.avgLoad} kW`),
-                        createRow("TR (kVA)", `TR1: ${data.tr1}, TR2: ${data.tr2}, TR3: ${data.tr3}, TR4: ${data.tr4}`),
-                        createRow("MDB (A)", `MDB1: ${data.mdb1}, MDB2: ${data.mdb2}, MDB3: ${data.mdb3}, MDB4: ${data.mdb4}`)
-                    ]
-                }),
-
-                new Paragraph({ children: [new TextRun({ text: "5. COMMENTS & SIGNATURES", bold: true, size: 24 })] }),
-                new Paragraph({ children: [new TextRun({ text: `Comments: ${data.comments}` })] }),
-                new Paragraph({ children: [new TextRun({ text: `Representative (EPC): ${data.repEpc}` })] }),
-                new Paragraph({ children: [new TextRun({ text: `Representative (BGPL): ${data.repBgpl}` })] })
-            ]
-        }]
-    });
-
-    Packer.toBlob(doc).then(blob => {
-        saveAs(blob, `Solar_Survey_Report_${data.siteName || 'Draft'}.docx`);
-    });
+function generatePDF() {
+    alert("ระบบกำลังพัฒนาการ Export เป็นไฟล์ PDF");
 }
 </script>
 </body>
