@@ -219,6 +219,16 @@
             border-radius: 6px;
         }
 
+        .photo-count-badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+        .photo-count-badge.ok { background: #dcfce7; color: #15803d; }
+        .photo-count-badge.missing { background: #ffe4e6; color: #be123c; }
+        .photo-count-badge.optional { background: #f1f5f9; color: #64748b; }
+
         /* Toast Notifications */
         #toastWrap {
             position: fixed;
@@ -268,7 +278,7 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* ---- PDF PREVIEW / PRINT STYLES (Ex-index Structure) ---- */
+        /* ---- PDF PREVIEW / PRINT STYLES ---- */
         .pdf-doc { color: #000; font-size: 11.5px; font-family: 'Bai Jamjuree', sans-serif; }
         .pdf-block {
             background: #fff; width: 210mm; padding: 14mm 15mm;
@@ -325,7 +335,7 @@
                     <i class="fa-solid fa-file-word text-base"></i> Export Word
                 </button>
                 <button id="btnPdf" onclick="handleExport('pdf')" class="export-btn bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md flex items-center gap-2">
-                    <i class="fa-solid fa-file-pdf text-base"></i> Export XXXXXXX
+                    <i class="fa-solid fa-file-pdf text-base"></i> Export PDF
                 </button>
             </div>
         </div>
@@ -756,11 +766,11 @@ function validateForm() {
     let errors = [];
     let isValid = true;
 
-    // Reset invalid states
+    // 1. Reset invalid states
     document.querySelectorAll('.field-invalid').forEach(el => el.classList.remove('field-invalid'));
     document.querySelectorAll('.section-card').forEach(el => el.classList.remove('invalid'));
 
-    // 1. Check Input Data-Required
+    // 2. Check Input Data-Required
     const requiredInputs = document.querySelectorAll('[data-required="true"]');
     requiredInputs.forEach(input => {
         if (!input.value.trim()) {
@@ -771,7 +781,7 @@ function validateForm() {
         }
     });
 
-    // 2. Check Building Types Checkbox (at least 1)
+    // 3. Check Building Types Checkbox (at least 1)
     const buildingChecked = document.querySelectorAll('input[name="building_type"]:checked').length > 0;
     if (!buildingChecked) {
         isValid = false;
@@ -779,7 +789,7 @@ function validateForm() {
         errors.push(`เลือกประเภทอาคาร (Building Type) อย่างน้อย 1 รายการ`);
     }
 
-    // 3. TR Inputs (at least 1)
+    // 4. TR Inputs (at least 1)
     const trVals = Array.from(document.querySelectorAll('.tr-field')).some(i => i.value.trim() !== "");
     if (!trVals) {
         isValid = false;
@@ -787,7 +797,7 @@ function validateForm() {
         errors.push(`กรอกขนาดหม้อแปลง TR อย่างน้อย 1 ช่อง`);
     }
 
-    // 4. MDB Inputs (at least 1)
+    // 5. MDB Inputs (at least 1)
     const mdbVals = Array.from(document.querySelectorAll('.mdb-field')).some(i => i.value.trim() !== "");
     if (!mdbVals) {
         isValid = false;
@@ -795,7 +805,7 @@ function validateForm() {
         errors.push(`กรอกขนาด MDB / Main CB อย่างน้อย 1 ช่อง`);
     }
 
-    // 5. Photo Strict Check (All required must have >= 1 photo)
+    // 6. Photo Strict Check (All required must have >= 1 photo)
     PHOTO_CATEGORIES.forEach(cat => {
         if (cat.req && photoData[cat.key].length === 0) {
             isValid = false;
@@ -865,10 +875,16 @@ function getFormData() {
     document.querySelectorAll('input[name="building_type"]:checked').forEach(c => bTypes.push(c.value));
 
     const trs = [];
-    for (let i = 1; i <= 4; i++) trs.push(getVal(`tr_${i}`));
+    for (let i = 1; i <= 4; i++) {
+        const val = getVal(`tr_${i}`);
+        if (val) trs.push(`${i}: ${val} kVA`);
+    }
 
     const mdbs = [];
-    for (let i = 1; i <= 4; i++) mdbs.push(getVal(`mdb_${i}`));
+    for (let i = 1; i <= 4; i++) {
+        const val = getVal(`mdb_${i}`);
+        if (val) mdbs.push(`${i}: ${val} A`);
+    }
 
     return {
         headerNo: getVal('header_no'),
@@ -923,152 +939,172 @@ function handleExport(type) {
     }
 }
 
-// --- PDF GENERATION (from index.html Engine) ---
-function renderPDFHTML(data) {
-    const formatCheck = (val, target) => (val === target || (Array.isArray(val) && val.includes(target))) ? '☑' : '☐';
+// --- PDF GENERATION ENGINE ---
+function chk(bool) {
+    return bool ? "[ / ]" : "[  ]";
+}
 
-    let html = `
-    <div class="pdf-doc">
-        <!-- PAGE 1: FORM -->
-        <div class="pdf-block page-break">
-            <div class="pdf-header">
-                <div>
-                    <h1>${data.headerTitle}</h1>
-                    <div class="pdf-header-no">${data.headerNo}</div>
-                </div>
+function pdfHeaderHTML(data) {
+    return `
+        <div class="pdf-header">
+            <div>
+                <h1>${data.headerTitle}</h1>
+                <div class="pdf-header-no">Header No.: ${data.headerNo}</div>
             </div>
-            <div class="pdf-date"><strong>Date:</strong> ${data.reportDate}</div>
-
-            <div class="section-title">1. General Information (ข้อมูลทั่วไป)</div>
-            <table class="data-table">
-                <tr><td class="label-cell"><strong>Site Name / ลูกค้า</strong></td><td>${data.siteName}</td></tr>
-                <tr><td class="label-cell"><strong>Site Location / สถานที่</strong></td><td>${data.siteLocation}</td></tr>
-                <tr><td class="label-cell"><strong>Lat, Longitude / พิกัด</strong></td><td>${data.coordinates}</td></tr>
-                <tr><td class="label-cell"><strong>Business / ธุรกิจ</strong></td><td>${data.business}</td></tr>
-                <tr><td class="label-cell"><strong>Contact / ผู้ติดต่อ</strong></td><td>${data.contactName} (${data.contactNumber})</td></tr>
-            </table>
-
-            <div class="section-title">2. ข้อมูลอาคาร (Building Information)</div>
-            <table class="data-table">
-                <tr><td class="label-cell"><strong>Building Age / อายุอาคาร (ปี)</strong></td><td>${data.buildingAge} ปี</td></tr>
-                <tr><td class="label-cell"><strong>Land use Plan / ผังเมือง</strong></td><td class="chk-mark">${formatCheck(data.landUsePlan, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.landUsePlan, 'No')} No</td></tr>
-                <tr><td class="label-cell"><strong>Drawing / แบบแปลน</strong></td><td class="chk-mark">${formatCheck(data.drawing, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.drawing, 'No')} No</td></tr>
-                <tr><td class="label-cell"><strong>Aor.1 / ใบอนุญาต อ.1</strong></td><td class="chk-mark">${formatCheck(data.aor1, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.aor1, 'No')} No</td></tr>
-                <tr><td class="label-cell"><strong>Building Type / ประเภทอาคาร</strong></td><td class="chk-mark">
-                    ${formatCheck(data.buildingTypes, 'Warehouse')} Warehouse &nbsp;
-                    ${formatCheck(data.buildingTypes, 'Factory')} Factory &nbsp;
-                    ${formatCheck(data.buildingTypes, 'Office')} Office &nbsp;
-                    ${formatCheck(data.buildingTypes, 'Others')} Others
-                </td></tr>
-            </table>
-
-            <div class="section-title">3. โครงสร้างและหลังคา (Roof & Structure)</div>
-            <table class="data-table">
-                <tr><td class="label-cell"><strong>Roof Type / ประเภทหลังคา</strong></td><td class="chk-mark">
-                    ${formatCheck(data.roofType, 'Metal Sheet')} Metal Sheet &nbsp;
-                    ${formatCheck(data.roofType, 'Tile')} Tile &nbsp;
-                    ${formatCheck(data.roofType, 'Concrete Slab')} Concrete Slab
-                </td></tr>
-                <tr><td class="label-cell"><strong>Rust and Corrosion / สนิมและการกัดกร่อน</strong></td><td class="chk-mark">
-                    ${formatCheck(data.rustCorrosion, 'Good')} Good &nbsp;
-                    ${formatCheck(data.rustCorrosion, 'Moderate')} Moderate &nbsp;
-                    ${formatCheck(data.rustCorrosion, 'Severe')} Severe
-                </td></tr>
-                <tr><td class="label-cell"><strong>Roof Condition / สภาพของหลังคา</strong></td><td class="chk-mark">
-                    ${formatCheck(data.roofCondition, 'Not Required')} Not Required &nbsp;
-                    ${formatCheck(data.roofCondition, 'Needs Replacement')} Needs Replacement
-                </td></tr>
-                <tr><td class="label-cell"><strong>Structural Reinforcement / การเสริมโครงสร้าง</strong></td><td class="chk-mark">
-                    ${formatCheck(data.structReinforce, 'Not Required')} Not Required &nbsp;
-                    ${formatCheck(data.structReinforce, 'Needed')} Needed &nbsp;
-                    ${formatCheck(data.structReinforce, 'Waiting Checking')} Waiting Checking
-                </td></tr>
-            </table>
-
-            <div class="section-title">4. Electrical System (ระบบไฟฟ้า)</div>
-            <table class="data-table">
-                <tr><td class="label-cell"><strong>Meter / มิเตอร์ไฟฟ้า</strong></td><td>${data.meterNo} (S/N: ${data.meterSn})</td></tr>
-                <tr><td class="label-cell"><strong>AMR System</strong></td><td class="chk-mark">${formatCheck(data.amr, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.amr, 'No')} No</td></tr>
-                <tr><td class="label-cell"><strong>Voltage Level</strong></td><td class="chk-mark">${formatCheck(data.voltageLevel, '22kV')} 22kV &nbsp;&nbsp; ${formatCheck(data.voltageLevel, '400-230V')} 400-230V</td></tr>
-                <tr><td class="label-cell"><strong>Avg. Load (kW)</strong></td><td>${data.avgLoad} kW</td></tr>
-            </table>
-
-            <div class="section-title">5. TR (หม้อแปลง) & MDB / Main CB</div>
-            <table class="data-table">
-                <tr>
-                    <td class="label-cell"><strong>TR (kVA)</strong></td>
-                    <td>${data.trs.filter(v => v).join(', ') || '-'} kVA</td>
-                </tr>
-                <tr>
-                    <td class="label-cell"><strong>MDB / Main CB (A)</strong></td>
-                    <td>${data.mdbs.filter(v => v).join(', ') || '-'} A</td>
-                </tr>
-            </table>
-
-            <div class="section-title">6. Site Conditions & Sign</div>
-            <table class="data-table">
-                <tr><td class="label-cell"><strong>Roof Slope / มุมหลังคา</strong></td><td class="chk-mark">${data.roofSlope}</td></tr>
-                <tr><td class="label-cell"><strong>Shape of Roof / รูปทรงหลังคา</strong></td><td>${data.shapeOfRoof}</td></tr>
-                <tr><td class="label-cell"><strong>Environment / สภาพแวดล้อม</strong></td><td class="chk-mark">${data.environment}</td></tr>
-                <tr><td class="label-cell"><strong>Shading / เงาบดบัง</strong></td><td class="chk-mark">${formatCheck(data.shading, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.shading, 'No')} No</td></tr>
-                <tr><td class="label-cell"><strong>Inverter Location</strong></td><td class="chk-mark">${formatCheck(data.inverterStation, 'Indoor')} Indoor &nbsp;&nbsp; ${formatCheck(data.inverterStation, 'Outdoor')} Outdoor</td></tr>
-                <tr><td class="label-cell"><strong>Comments / ข้อเสนอแนะ</strong></td><td>${data.comments}</td></tr>
-            </table>
-
-            <table class="data-table sign-table" style="margin-top: 15px;">
-                <tr>
-                    <td style="width: 50%; text-align: center; vertical-align: bottom;">
-                        <div>________________________</div>
-                        <div>( ${data.repEpc} )</div>
-                        <div>Representative (EPC)</div>
-                    </td>
-                    <td style="width: 50%; text-align: center; vertical-align: bottom;">
-                        <div>________________________</div>
-                        <div>( ${data.repBgpl} )</div>
-                        <div>Representative (BGPL)</div>
-                    </td>
-                </tr>
-            </table>
         </div>
+        <div class="pdf-date">Date: ${data.reportDate}</div>
+    `;
+}
+
+function numberedList(arr, unit, max=10) {
+    let rows = '';
+    for(let i=0; i<max; i+=5){
+        let cells = '';
+        for(let j=i; j<i+5 && j<max; j++){
+            const num = j+1;
+            const found = arr.find(x => x.startsWith(`${num}:`));
+            const val = found ? found.split(': ')[1].replace(` ${unit}`, '') : '';
+            cells += `<span style="display:inline-block;min-width:110px;margin-right:14px;">${num}: ........${val}........${unit}</span>`;
+        }
+        rows += `<div style="margin-bottom:10px;">${cells}</div>`;
+    }
+    return rows;
+}
+
+function renderPDFHTML(data) {
+    // PAGE 1: General / Building / Roof / Electrical
+    const page1Block = `
+        ${pdfHeaderHTML(data)}
+
+        <div class="section-title">ข้อมูลทั่วไป (General Information)</div>
+        <table class="data-table">
+            <tr><td class="label-cell">Site Name / ลูกค้า:</td><td>${data.siteName}</td></tr>
+            <tr><td class="label-cell">Site Location / สถานที่:</td><td>${data.siteLocation}</td></tr>
+            <tr><td class="label-cell">Longitude / พิกัด:</td><td>${data.coordinates}</td></tr>
+            <tr><td class="label-cell">Business / ธุรกิจ:</td><td>${data.business}</td></tr>
+            <tr><td class="label-cell">Contact / ผู้ติดต่อ:</td><td>Contract number / เบอร์ติดต่อ: ${data.contactNumber || ''} &nbsp;&nbsp; ${data.contactName}</td></tr>
+        </table>
+
+        <div class="section-title">Building Information (ข้อมูลอาคาร)</div>
+        <table class="data-table">
+            <tr><td class="label-cell">Age / อายุอาคาร (ปี):</td><td>......${data.buildingAge || '-'}...... ปี / Year</td></tr>
+            <tr><td class="label-cell">Land use Plan / ที่ดิน:</td><td class="chk-mark">${chk(data.landUsePlan==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.landUsePlan==='No')} ไม่มี / No</td></tr>
+            <tr><td class="label-cell">Drawing / แบบแปลน:</td><td class="chk-mark">${chk(data.drawing==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.drawing==='No')} ไม่มี / No</td></tr>
+            <tr><td class="label-cell">Aor.1 / ใบอนุญาต อ.1:</td><td class="chk-mark">${chk(data.aor1==='Yes')} มี / Yes &nbsp;&nbsp; ${chk(data.aor1==='No')} ไม่มี / No</td></tr>
+            <tr><td class="label-cell">Building Type / ประเภทอาคาร:</td><td class="chk-mark">
+                ${chk(data.buildingTypes.includes('Warehouse'))} Warehouse / โกดัง &nbsp;&nbsp;
+                ${chk(data.buildingTypes.includes('Factory'))} Factory / โรงงาน &nbsp;&nbsp;
+                ${chk(data.buildingTypes.includes('Office'))} Office / ออฟฟิศ &nbsp;&nbsp;
+                ${chk(data.buildingTypes.includes('Others'))} Others / อื่นๆ
+            </td></tr>
+        </table>
+
+        <div class="section-title">Roof &amp; Structure (โครงสร้างและหลังคา)</div>
+        <table class="data-table">
+            <tr><td class="label-cell">Roof Type / ประเภทหลังคา:</td><td class="chk-mark">
+                ${chk(data.roofType==='Metal Sheet')} Metal Sheet &nbsp;&nbsp;
+                ${chk(data.roofType==='Tile')} Tile / กระเบื้อง &nbsp;&nbsp;
+                ${chk(data.roofType==='Concrete Slab')} Concrete Slab / พื้นปูน
+            </td></tr>
+            <tr><td class="label-cell">Rust and Corrosion / สนิมหรือการกัดกร่อน:</td><td class="chk-mark">
+                ${chk(data.rustCorrosion==='Good')} Good &nbsp;&nbsp;
+                ${chk(data.rustCorrosion==='Moderate')} Moderate &nbsp;&nbsp;
+                ${chk(data.rustCorrosion==='Severe')} Severe
+            </td></tr>
+            <tr><td class="label-cell">Roof Condition / สภาพของหลังคา:</td><td class="chk-mark">
+                ${chk(data.roofCondition==='Not Required')} Not Required / ไม่ต้องเปลี่ยน &nbsp;&nbsp;
+                ${chk(data.roofCondition==='Needs Replacement')} Needs Replacement / ต้องเปลี่ยน
+            </td></tr>
+            <tr><td class="label-cell">Structural Reinforcement / เสริมโครงสร้าง:</td><td class="chk-mark">
+                ${chk(data.structReinforce==='Not Required')} Not Required / ไม่ต้องเสริม &nbsp;&nbsp;
+                ${chk(data.structReinforce==='Needed')} Structural Reinforcement Needed / ต้องเสริม<br>
+                ${chk(data.structReinforce==='Waiting Checking')} Waiting EPC Checking Structure / รอตรวจสอบ.
+            </td></tr>
+        </table>
+
+        <div class="section-title">Electrical System (ระบบไฟฟ้า)</div>
+        <table class="data-table">
+            <tr><td class="label-cell">Meter / มิเตอร์ไฟฟ้า:</td><td>${data.meterNo}</td>
+                <td class="label-cell">S/N / รหัสเครื่องวัด:</td><td>${data.meterSn}</td></tr>
+            <tr><td class="label-cell">AMR:</td><td class="chk-mark" colspan="3">${chk(data.amr==='Yes')} Yes / มี &nbsp;&nbsp; ${chk(data.amr==='No')} No / ไม่มี</td></tr>
+            <tr><td class="label-cell">Voltage Level (Zero export) / ระดับแรงดันไฟฟ้า:</td><td class="chk-mark" colspan="3">${chk(data.voltageLevel==='22kV')} 22kV &nbsp;&nbsp; ${chk(data.voltageLevel==='400-230V')} 400-230V</td></tr>
+            <tr><td class="label-cell">Avg. Load (kW) / ค่าเฉลี่ยการใช้ไฟฟ้า:</td><td colspan="3">............ ${data.avgLoad || ''} kW</td></tr>
+        </table>
     `;
 
-    // PHOTO PAGES GENERATION
-    PHOTO_CATEGORIES.forEach(cat => {
-        const photos = photoData[cat.key];
-        if (photos && photos.length > 0) {
-            for (let i = 0; i < photos.length; i += 4) {
-                const chunk = photos.slice(i, i + 4);
-                html += `
-                <div class="pdf-block page-break">
-                    <div class="section-header-bar">${cat.title.toUpperCase()}</div>
-                    <table class="photo-grid-table" style="margin-top: 10px;">
-                        <tr>
-                            <td>${chunk[0] ? `<img src="${chunk[0].src}">` : ''}</td>
-                            <td>${chunk[1] ? `<img src="${chunk[1].src}">` : ''}</td>
-                        </tr>
-                        <tr>
-                            <td class="caption-cell">${chunk[0] ? chunk[0].caption : ''}</td>
-                            <td class="caption-cell">${chunk[1] ? chunk[1].caption : ''}</td>
-                        </tr>
-                        ${chunk.length > 2 ? `
-                        <tr>
-                            <td>${chunk[2] ? `<img src="${chunk[2].src}">` : ''}</td>
-                            <td>${chunk[3] ? `<img src="${chunk[3].src}">` : ''}</td>
-                        </tr>
-                        <tr>
-                            <td class="caption-cell">${chunk[2] ? chunk[2].caption : ''}</td>
-                            <td class="caption-cell">${chunk[3] ? chunk[3].caption : ''}</td>
-                        </tr>
-                        ` : ''}
-                    </table>
-                </div>
-                `;
-            }
-        }
-    });
+    // PAGE 2: TR / MDB / Site Conditions / Comments / Signatures
+    const page2Block = `
+        ${pdfHeaderHTML(data)}
 
-    html += `</div>`;
-    return html;
+        <div class="section-title">TR (หม้อแปลง):</div>
+        ${numberedList(data.trs, 'kVA')}
+        <div class="section-title">MDB / Main CB:</div>
+        ${numberedList(data.mdbs, 'A')}
+
+        <div class="section-title">Site Conditions (สภาพแวดล้อม)</div>
+        <table class="data-table">
+            <tr><td class="label-cell">มุมหลังคา / Roof Slope:</td><td class="chk-mark">
+                ${chk(data.roofSlope==='< 8°')} < 8° &nbsp;&nbsp;
+                ${chk(data.roofSlope==='8-12°')} 8-12° &nbsp;&nbsp;
+                ${chk(data.roofSlope==='12-15°')} 12-15° &nbsp;&nbsp;
+                ${chk(data.roofSlope==='> 15°')} มากกว่า 15°
+            </td></tr>
+            <tr><td class="label-cell">Shape of Roof / รูปทรงหลังคา:</td><td>${data.shapeOfRoof}</td></tr>
+            <tr><td class="label-cell">Environment / สภาพแวดล้อม:</td><td class="chk-mark">
+                ${chk(data.environment==='Good')} Good &nbsp;&nbsp; 
+                ${chk(data.environment==='Moderate')} Moderate &nbsp;&nbsp;
+                ${chk(data.environment==='Severe')} Severe
+            </td></tr>
+            <tr><td class="label-cell">Shading / เงา:</td><td class="chk-mark">
+                ${chk(data.shading==='Yes')} Yes / มีเงา &nbsp;&nbsp; ${chk(data.shading==='No')} No / ไม่มีเงา
+            </td></tr>
+            <tr><td class="label-cell">Inverter Location / ตำแหน่งอินเวอร์เตอร์:</td><td class="chk-mark">
+                ${chk(data.inverterStation==='Indoor')} Indoor / ภายใน &nbsp;&nbsp; ${chk(data.inverterStation==='Outdoor')} Outdoor / ภายนอก
+            </td></tr>
+        </table>
+
+        <div class="section-title">Comments / ข้อเสนอแนะ</div>
+        <div class="comment-lines">
+            ${(data.comments ? data.comments.split('\n') : ['','','']).map(line => `<div>${line}</div>`).join('')}
+            ${!data.comments ? '<div></div><div></div>' : ''}
+        </div>
+
+        <table class="data-table sign-table" style="margin-top:20px;">
+            <tr><td style="width:50%; text-align:center;"><br><br>${data.repEpc}</td><td style="width:50%; text-align:center;"><br><br>${data.repBgpl}</td></tr>
+            <tr><td style="text-align:center;">Representative (EPC)</td><td style="text-align:center;">Representative (BGPL)</td></tr>
+        </table>
+    `;
+
+    // PHOTO PAGES
+    const photoBlocks = PHOTO_CATEGORIES.map(cat => {
+        const photos = photoData[cat.key] || [];
+        if (photos.length === 0) return '';
+
+        let gridRows = '';
+        for (let i = 0; i < photos.length; i += 2) {
+            const p1 = photos[i], p2 = photos[i + 1];
+            gridRows += `
+            <tr>
+                <td><img src="${p1.src}"></td>
+                <td>${p2 ? `<img src="${p2.src}">` : ''}</td>
+            </tr>
+            <tr>
+                <td class="caption-cell">${p1.caption || ''}</td>
+                <td class="caption-cell">${p2 ? (p2.caption || '') : ''}</td>
+            </tr>`;
+        }
+
+        return `
+            ${pdfHeaderHTML(data)}
+            <table class="photo-grid-table">
+                <tr><td colspan="2" class="section-header-bar">${cat.title.toUpperCase()}</td></tr>
+                ${gridRows}
+            </table>
+        `;
+    }).filter(b => b !== '');
+
+    const allBlocks = [page1Block, page2Block, ...photoBlocks];
+    return `<div class="pdf-doc">${allBlocks.map((html, idx) => `<div class="pdf-block${idx === allBlocks.length - 1 ? '' : ' page-break'}">${html}</div>`).join('')}</div>`;
 }
 
 function generatePDF() {
@@ -1080,10 +1116,11 @@ function generatePDF() {
 
     const opt = {
         margin: 0,
-        filename: `Solar_Survey_${data.siteName || 'Report'}.pdf`,
+        filename: `${data.headerNo}_${(data.siteName || 'Report').replace(/\s+/g, '_')}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css'] }
     };
 
     html2pdf().set(opt).from(renderArea.children[0]).save().then(() => {
@@ -1092,11 +1129,11 @@ function generatePDF() {
     });
 }
 
-// --- WORD GENERATION (from index.html Engine) ---
+// --- WORD GENERATION ENGINE ---
 async function generateWord() {
     showToast("กำลังสร้างไฟล์ Word...", ["ระบบกำลังสร้างโครงสร้าง .docx"], "success");
     const data = getFormData();
-    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, ImageRun, Header, Footer, PageBreak } = docx;
+    const { Document, Packer, Paragraph, TextRun, ImageRun } = docx;
 
     const sections = [];
 
@@ -1119,9 +1156,9 @@ async function generateWord() {
         new Paragraph({ children: [new TextRun({ text: `Meter No: ${data.meterNo}\nS/N: ${data.meterSn}\nAMR: ${data.amr}\nVoltage Level: ${data.voltageLevel}\nAvg Load: ${data.avgLoad} kW` })] }),
 
         new Paragraph({ children: [new TextRun({ text: "5. TR & MDB", bold: true, size: 22 })], space: { before: 200, after: 100 } }),
-        new Paragraph({ children: [new TextRun({ text: `TR (kVA): ${data.trs.filter(v=>v).join(', ')}\nMDB / Main CB (A): ${data.mdbs.filter(v=>v).join(', ')}` })] }),
+        new Paragraph({ children: [new TextRun({ text: `TR (kVA): ${data.trs.join(', ')}\nMDB / Main CB (A): ${data.mdbs.join(', ')}` })] }),
 
-        new Paragraph({ children: [new TextRun({ text: "6. Site Conditions & Sign", bold: true, size: 22 })], space: { before: 200, after: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: "6. Site Conditions & Signatures", bold: true, size: 22 })], space: { before: 200, after: 100 } }),
         new Paragraph({ children: [new TextRun({ text: `Roof Slope: ${data.roofSlope}\nShape of Roof: ${data.shapeOfRoof}\nEnvironment: ${data.environment}\nShading: ${data.shading}\nInverter Location: ${data.inverterStation}\nComments: ${data.comments}` })] }),
         new Paragraph({ children: [new TextRun({ text: `\n\nRepresentative (EPC): ${data.repEpc}\nRepresentative (BGPL): ${data.repBgpl}` })] })
     ];
