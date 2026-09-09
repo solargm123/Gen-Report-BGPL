@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solar Survey Report Generator</title>
+    <title>BGPL Survey Report Generator</title>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Bai Jamjuree & Sarabun -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- CDNs -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,7 +33,7 @@
             color: #1e293b;
         }
 
-        /* Topbar */
+        /* Glassmorphism Topbar */
         .topbar {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
             box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
@@ -44,7 +44,7 @@
             background: #ffffff;
             border-radius: 16px;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
             margin-bottom: 24px;
             padding: 24px;
             transition: all 0.25s ease;
@@ -58,6 +58,7 @@
             box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
         }
 
+        /* Section Title Header */
         .section-title-row {
             display: flex;
             align-items: center;
@@ -81,7 +82,7 @@
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
         }
 
-        /* Form Elements */
+        /* Form Controls */
         .form-label {
             font-weight: 600;
             color: #334155;
@@ -89,7 +90,10 @@
             display: block;
             font-size: 0.85rem;
         }
-        .form-label .req { color: var(--brand-rose); margin-left: 2px; }
+        .form-label .req {
+            color: var(--brand-rose);
+            margin-left: 2px;
+        }
         .form-input, .form-select, .form-textarea {
             width: 100%;
             padding: 10px 14px;
@@ -99,6 +103,9 @@
             background: #f8fafc;
             color: #0f172a;
             transition: all 0.2s ease;
+        }
+        .form-input:hover, .form-select:hover, .form-textarea:hover {
+            border-color: #94a3b8;
         }
         .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
@@ -111,55 +118,192 @@
             background: #fff1f2 !important;
         }
 
-        .chk-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        /* Checkbox & Radio Custom styling */
+        .chk-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
         .chk-item {
-            display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 500;
-            cursor: pointer; padding: 8px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px;
-            background: #f8fafc; transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f8fafc;
+            user-select: none;
+            transition: all 0.2s ease;
         }
-        .chk-item:hover { border-color: var(--brand-sky); background: #f0f9ff; }
+        .chk-item:hover {
+            border-color: var(--brand-sky);
+            background: #f0f9ff;
+        }
         .chk-item:has(input:checked) {
-            border-color: var(--brand-indigo); background: #eef2ff; color: var(--brand-indigo-dark); font-weight: 600;
+            border-color: var(--brand-indigo);
+            background: #eef2ff;
+            color: var(--brand-indigo-dark);
+            font-weight: 600;
         }
-        .chk-item input { width: 16px; height: 16px; accent-color: var(--brand-indigo); }
+        .chk-item input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--brand-indigo);
+        }
 
-        /* Progress Bar */
-        .progress-track { width: 100%; height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.15); overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #f59e0b, #10b981); width: 0%; transition: width 0.4s ease; }
-        
-        .export-btn { transition: all 0.2s ease; }
-        .export-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); }
+        /* Progress Bar & Export Buttons */
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #f59e0b, #10b981);
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .export-btn {
+            transition: all 0.2s ease;
+        }
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        .export-btn:active {
+            transform: translateY(0);
+        }
 
-        /* Photo Sections */
+        /* Photo Cards & Dropzone */
         .photo-section-card {
-            margin-bottom: 20px; padding: 18px; border-radius: 14px; border: 2px dashed #cbd5e1; background: #f8fafc; transition: all 0.2s ease;
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 14px;
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+            transition: all 0.2s ease;
         }
-        .photo-section-card.dragover { border-color: var(--brand-indigo); background: #eef2ff; }
-        .photo-section-card.photo-ok { border-style: solid; border-color: #86efac; background: #f0fdf4; }
-        .photo-section-card.photo-missing { border-color: #fda4af; background: #fff1f2; }
+        .photo-section-card.dragover {
+            border-color: var(--brand-indigo);
+            background: #eef2ff;
+        }
+        .photo-section-card.photo-ok {
+            border-style: solid;
+            border-color: #86efac;
+            background: #f0fdf4;
+        }
+        .photo-section-card.photo-missing {
+            border-color: #fda4af;
+            background: #fff1f2;
+        }
 
         .photo-thumb-box {
-            background: #ffffff; padding: 8px; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: relative;
+            background: #ffffff;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative;
         }
-        .photo-thumb-box img { width: 100%; height: 110px; object-fit: cover; border-radius: 6px; }
+        .photo-thumb-box img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
 
-        /* Toasts */
-        #toastWrap { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; max-width: 380px; width: 100%; pointer-events: none; }
+        /* Toast Notifications */
+        #toastWrap {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 380px;
+            width: 100%;
+            pointer-events: none;
+        }
         .toast {
-            pointer-events: auto; background: #ffffff; border-left: 6px solid var(--brand-rose); border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15); padding: 16px; font-size: 0.88rem; animation: toastIn 0.3s ease;
+            pointer-events: auto;
+            background: #ffffff;
+            border-left: 6px solid var(--brand-rose);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            font-size: 0.88rem;
+            animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .toast.success { border-left-color: var(--brand-green); }
-        .toast h4 { font-weight: 700; color: #0f172a; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
-        .toast ul { margin: 8px 0 0 18px; color: #475569; max-height: 180px; overflow-y: auto; list-style-type: disc; }
-        @keyframes toastIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .toast.success {
+            border-left-color: var(--brand-green);
+        }
+        .toast h4 {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast ul {
+            margin: 8px 0 0 18px;
+            color: #475569;
+            max-height: 180px;
+            overflow-y: auto;
+            list-style-type: disc;
+        }
+        .toast ul li {
+            margin-bottom: 4px;
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
 
-        /* Hidden PDF Area */
+        /* ---- PDF PREVIEW / PRINT STYLES (Ex-index Structure) ---- */
+        .pdf-doc { color: #000; font-size: 11.5px; font-family: 'Bai Jamjuree', sans-serif; }
+        .pdf-block {
+            background: #fff; width: 210mm; padding: 14mm 15mm;
+            margin: 0 auto; box-sizing: border-box;
+        }
+        .pdf-block.page-break { page-break-after: always; }
+        .pdf-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 6px;
+        }
+        .pdf-header h1 { font-size: 20px; font-weight: 700; font-family: 'Bai Jamjuree', sans-serif; margin: 0; }
+        .pdf-header-no { color: #dc2626; font-weight: 700; font-size: 12px; margin-top: 2px; }
+        .pdf-date { font-size: 12px; margin-bottom: 10px; }
+        .section-title { font-weight: 700; font-size: 12.5px; margin: 12px 0 6px 0; }
+        
+        table.data-table { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
+        table.data-table td { border: 1px solid #000; padding: 5px 8px; vertical-align: top; font-size: 11.5px; }
+        td.label-cell { width: 34%; }
+        .chk-mark { font-size: 12px; letter-spacing: 0.5px; }
+        .section-header-bar {
+            border: 1px solid #000; font-weight: 700; text-align: center;
+            padding: 6px; font-size: 12.5px; margin-top: 0;
+        }
+        table.photo-grid-table { width: 100%; border-collapse: collapse; }
+        table.photo-grid-table td {
+            border: 1px solid #000; width: 50%; vertical-align: middle; text-align: center; padding: 6px;
+        }
+        table.photo-grid-table td.caption-cell { font-size: 11px; padding: 4px 6px; height: 22px; }
+        table.photo-grid-table img {
+            max-width: 100%; max-height: 190px; object-fit: contain; display: block; margin: 0 auto;
+        }
+        .sign-table td { height: 60px; }
+        .comment-lines div { border-bottom: 1px solid #000; height: 22px; }
+
         #pdfRenderArea { display: none; }
-        .pdf-page { background: #fff; padding: 30px; font-family: 'Bai Jamjuree', sans-serif; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; }
-        .pdf-table th, .pdf-table td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
-        .pdf-table th { background: #f1f5f9; font-weight: bold; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -167,7 +311,7 @@
 <div id="toastWrap"></div>
 
 <div class="max-w-6xl mx-auto">
-    <!-- Header bar -->
+    <!-- Top Header & Progress Bar -->
     <div class="topbar text-white p-6 rounded-3xl mb-8 flex flex-col gap-5">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -181,11 +325,12 @@
                     <i class="fa-solid fa-file-word text-base"></i> Export Word
                 </button>
                 <button id="btnPdf" onclick="handleExport('pdf')" class="export-btn bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md flex items-center gap-2">
-                    <i class="fa-solid fa-file-pdf text-base"></i> Export PDF
+                    <i class="fa-solid fa-file-pdf text-base"></i> Export XXXXXXX
                 </button>
             </div>
         </div>
         
+        <!-- Progress Tracker -->
         <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm">
             <div class="flex justify-between items-center mb-2">
                 <span class="text-xs font-semibold text-slate-200 flex items-center gap-2">
@@ -199,10 +344,10 @@
         </div>
     </div>
 
-    <!-- Form Section -->
+    <!-- Survey Form -->
     <form id="surveyForm" onsubmit="return false;" oninput="updateProgress()" onchange="updateProgress()">
         
-        <!-- Document Meta -->
+        <!-- Document Metadata -->
         <div class="section-card" style="border-top: 4px solid var(--brand-amber);">
             <div class="section-title-row">
                 <div class="section-badge" style="background: linear-gradient(135deg,#f59e0b,#f97316);"><i class="fa-solid fa-file-signature"></i></div>
@@ -227,36 +372,38 @@
             </div>
         </div>
 
-        <!-- 1. General Info -->
+        <!-- 1. General Information -->
         <div class="section-card" id="card_general">
             <div class="section-title-row">
                 <div class="section-badge">1</div>
                 <div>
                     <div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-address-card text-sky-600 mr-1.5"></i> General Information (ข้อมูลทั่วไป)</div>
+                    <div class="section-subtitle text-xs text-slate-400">ข้อมูลลูกค้า สถานที่ และการติดต่อ</div>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="form-label">Site Name / ชื่อลูกค้า<span class="req">*</span></label><input type="text" id="site_name" class="form-input" data-required="true" data-name="Site Name"></div>
-                <div><label class="form-label">Site Location / สถานที่<span class="req">*</span></label><input type="text" id="site_location" class="form-input" data-required="true" data-name="Site Location"></div>
-                <div class="md:col-span-2"><label class="form-label">Lat, Longitude / พิกัด<span class="req">*</span></label><input type="text" id="coordinates" class="form-input" placeholder="e.g. 13.7563, 100.5018" data-required="true" data-name="Lat, Longitude"></div>
-                <div><label class="form-label">Business / ประเภทธุรกิจ<span class="req">*</span></label><input type="text" id="business" class="form-input" data-required="true" data-name="Business"></div>
+                <div><label class="form-label">Site Name / ชื่อลูกค้า<span class="req">*</span></label><input type="text" id="site_name" class="form-input" data-required="true" data-name="Site Name / ชื่อลูกค้า"></div>
+                <div><label class="form-label">Site Location / สถานที่<span class="req">*</span></label><input type="text" id="site_location" class="form-input" data-required="true" data-name="Site Location / สถานที่"></div>
+                <div class="md:col-span-2"><label class="form-label">Lat, Longitude / พิกัด<span class="req">*</span></label><input type="text" id="coordinates" class="form-input" placeholder="e.g. 13.7563, 100.5018" data-required="true" data-name="Lat, Longitude / พิกัด"></div>
+                <div><label class="form-label">Business / ประเภทธุรกิจ<span class="req">*</span></label><input type="text" id="business" class="form-input" data-required="true" data-name="Business / ประเภทธุรกิจ"></div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div><label class="form-label">Contact / ผู้ติดต่อ<span class="req">*</span></label><input type="text" id="contact_name" class="form-input" data-required="true" data-name="Contact"></div>
-                    <div><label class="form-label">Phone / เบอร์ติดต่อ<span class="req">*</span></label><input type="text" id="contact_number" class="form-input" data-required="true" data-name="Phone"></div>
+                    <div><label class="form-label">Contact / ผู้ติดต่อ<span class="req">*</span></label><input type="text" id="contact_name" class="form-input" data-required="true" data-name="Contact / ผู้ติดต่อ"></div>
+                    <div><label class="form-label">Phone / เบอร์ติดต่อ<span class="req">*</span></label><input type="text" id="contact_number" class="form-input" data-required="true" data-name="Phone / เบอร์ติดต่อ"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. Building Info -->
+        <!-- 2. Building Information -->
         <div class="section-card" id="card_building">
             <div class="section-title-row">
                 <div class="section-badge">2</div>
                 <div>
                     <div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-building text-sky-600 mr-1.5"></i> ข้อมูลอาคาร (Building Information)</div>
+                    <div class="section-subtitle text-xs text-slate-400">อายุอาคาร เอกสารสิทธิ์ และประเภทอาคาร</div>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="form-label">Building Age / อายุอาคาร (ปี)<span class="req">*</span></label><input type="number" id="building_age" class="form-input" data-required="true" data-name="Building Age"></div>
+                <div><label class="form-label">Building Age / อายุอาคาร (ปี)<span class="req">*</span></label><input type="number" id="building_age" class="form-input" data-required="true" data-name="Building Age / อายุอาคาร"></div>
                 <div>
                     <label class="form-label">Land use Plan / ผังเมือง</label>
                     <div class="chk-group">
@@ -279,7 +426,7 @@
                     </div>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="form-label">Building Type / ประเภทอาคาร<span class="req">*</span></label>
+                    <label class="form-label">Building Type / ประเภทอาคาร<span class="req">*</span> <span class="text-xs text-slate-400 font-normal">(เลือกอย่างน้อย 1 รายการ)</span></label>
                     <div class="chk-group p-3 border border-slate-200 rounded-xl bg-slate-50" id="group_building_type">
                         <label class="chk-item"><input type="checkbox" name="building_type" value="Warehouse"> Warehouse / โกดัง</label>
                         <label class="chk-item"><input type="checkbox" name="building_type" value="Factory"> Factory / โรงงาน</label>
@@ -294,7 +441,10 @@
         <div class="section-card" id="card_roof">
             <div class="section-title-row">
                 <div class="section-badge">3</div>
-                <div><div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-layer-group text-sky-600 mr-1.5"></i> โครงสร้างและหลังคา (Roof & Structure)</div></div>
+                <div>
+                    <div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-layer-group text-sky-600 mr-1.5"></i> โครงสร้างและหลังคา (Roof & Structure)</div>
+                    <div class="section-subtitle text-xs text-slate-400">สภาพหลังคา ความแข็งแรง และการกัดกร่อน</div>
+                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -314,7 +464,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">Roof Condition / สภาพหลังคา</label>
+                    <label class="form-label">Roof Condition / สภาพของหลังคา</label>
                     <div class="chk-group">
                         <label class="chk-item"><input type="radio" name="roof_condition" value="Not Required" checked> Not Required / สภาพดี</label>
                         <label class="chk-item"><input type="radio" name="roof_condition" value="Needs Replacement"> Needs Replacement / ต้องเปลี่ยน</label>
@@ -335,18 +485,21 @@
         <div class="section-card" id="card_electrical">
             <div class="section-title-row">
                 <div class="section-badge" style="background: linear-gradient(135deg,#f59e0b,#fbbf24);">4</div>
-                <div><div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-bolt text-amber-500 mr-1.5"></i> Electrical System (ระบบไฟฟ้า)</div></div>
+                <div>
+                    <div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-bolt text-amber-500 mr-1.5"></i> Electrical System (ระบบไฟฟ้า)</div>
+                    <div class="section-subtitle text-xs text-slate-400">มิเตอร์ แรงดันไฟฟ้า และโหลดการใช้งาน</div>
+                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div><label class="form-label">Meter / หมายเลขอุปกรณ์มิเตอร์<span class="req">*</span></label><input type="text" id="meter_no" class="form-input" data-required="true" data-name="Meter No."></div>
-                <div><label class="form-label">S/N / รหัสเครื่องวัด<span class="req">*</span></label><input type="text" id="meter_sn" class="form-input" data-required="true" data-name="Meter S/N"></div>
+                <div><label class="form-label">Meter / หมายเลขอุปกรณ์มิเตอร์<span class="req">*</span></label><input type="text" id="meter_no" class="form-input" data-required="true" data-name="Meter / หมายเลขอุปกรณ์มิเตอร์"></div>
+                <div><label class="form-label">S/N / รหัสเครื่องวัด<span class="req">*</span></label><input type="text" id="meter_sn" class="form-input" data-required="true" data-name="S/N / รหัสเครื่องวัด"></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="form-label">AMR System</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="amr" value="Yes"> Yes</label>
-                        <label class="chk-item"><input type="radio" name="amr" value="No" checked> No</label>
+                        <label class="chk-item"><input type="radio" name="amr" value="Yes"> Yes / มี</label>
+                        <label class="chk-item"><input type="radio" name="amr" value="No" checked> No / ไม่มี</label>
                     </div>
                 </div>
                 <div>
@@ -356,7 +509,7 @@
                         <label class="chk-item"><input type="radio" name="voltage_level" value="400-230V"> 400-230V</label>
                     </div>
                 </div>
-                <div><label class="form-label">Avg. Load (kW) / โหลดเฉลี่ย<span class="req">*</span></label><input type="number" id="avg_load" class="form-input" data-required="true" data-name="Avg. Load"></div>
+                <div><label class="form-label">Avg. Load (kW) / โหลดเฉลี่ย<span class="req">*</span></label><input type="number" id="avg_load" class="form-input" data-required="true" data-name="Avg. Load (kW)"></div>
             </div>
         </div>
 
@@ -364,15 +517,24 @@
         <div class="section-card" id="card_trmdb">
             <div class="section-title-row">
                 <div class="section-badge" style="background: linear-gradient(135deg,#f59e0b,#fbbf24);">5</div>
-                <div><div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-plug-circle-bolt text-amber-500 mr-1.5"></i> TR (หม้อแปลง) & MDB / Main CB</div></div>
+                <div>
+                    <div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-plug-circle-bolt text-amber-500 mr-1.5"></i> TR (หม้อแปลง) & MDB / Main CB</div>
+                    <div class="section-subtitle text-xs text-slate-400">กรอกขนาดข้อมูลอย่างน้อย 1 ช่องในแต่ละหมวด<span class="req">*</span></div>
+                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                    <h3 class="font-bold text-slate-700 text-sm mb-3">หม้อแปลง TR (kVA) <span class="text-xs text-rose-500">*ต้องระบุอย่างน้อย 1 ช่อง</span></h3>
+                    <h3 class="font-bold text-slate-700 text-sm mb-3 flex items-center justify-between">
+                        <span>หม้อแปลง TR (kVA)</span>
+                        <span class="text-xs font-normal text-rose-500">*ต้องระบุอย่างน้อย 1 ค่า</span>
+                    </h3>
                     <div class="grid grid-cols-2 gap-3" id="trInputs"></div>
                 </div>
                 <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
-                    <h3 class="font-bold text-slate-700 text-sm mb-3">MDB / Main CB (A) <span class="text-xs text-rose-500">*ต้องระบุอย่างน้อย 1 ช่อง</span></h3>
+                    <h3 class="font-bold text-slate-700 text-sm mb-3 flex items-center justify-between">
+                        <span>MDB / Main CB (A)</span>
+                        <span class="text-xs font-normal text-rose-500">*ต้องระบุอย่างน้อย 1 ค่า</span>
+                    </h3>
                     <div class="grid grid-cols-2 gap-3" id="mdbInputs"></div>
                 </div>
             </div>
@@ -382,11 +544,14 @@
         <div class="section-card" id="card_site">
             <div class="section-title-row">
                 <div class="section-badge" style="background: linear-gradient(135deg,#f59e0b,#fbbf24);">6</div>
-                <div><div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-sun text-amber-500 mr-1.5"></i> Site Conditions & Comments</div></div>
+                <div>
+                    <div class="section-title-text font-bold text-slate-800"><i class="fa-solid fa-sun text-amber-500 mr-1.5"></i> Site Conditions & Comments</div>
+                    <div class="section-subtitle text-xs text-slate-400">สภาพแวดล้อม มุมเอียง และผู้ลงนามรับรอง</div>
+                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="form-label">Roof Slope / ความชันหลังคา</label>
+                    <label class="form-label">Roof Slope / มุมความชันหลังคา</label>
                     <div class="chk-group">
                         <label class="chk-item"><input type="radio" name="roof_slope" value="< 8°" checked> &lt;8°</label>
                         <label class="chk-item"><input type="radio" name="roof_slope" value="8-12°"> 8-12°</label>
@@ -394,7 +559,7 @@
                         <label class="chk-item"><input type="radio" name="roof_slope" value="> 15°"> &gt;15°</label>
                     </div>
                 </div>
-                <div><label class="form-label">Shape of Roof / รูปทรงหลังคา<span class="req">*</span></label><input type="text" id="Shape_of_Roof" class="form-input" data-required="true" data-name="Shape of Roof"></div>
+                <div><label class="form-label">Shape of Roof / รูปทรงหลังคา<span class="req">*</span></label><input type="text" id="Shape_of_Roof" class="form-input" data-required="true" data-name="Shape of Roof / รูปทรงหลังคา"></div>
                 <div>
                     <label class="form-label">Environment / สภาพแวดล้อม</label>
                     <div class="chk-group">
@@ -406,34 +571,34 @@
                 <div>
                     <label class="form-label">Shading / เงาบดบัง</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="shading" value="Yes"> Yes</label>
-                        <label class="chk-item"><input type="radio" name="shading" value="No" checked> No</label>
+                        <label class="chk-item"><input type="radio" name="shading" value="Yes"> Yes / มีเงา</label>
+                        <label class="chk-item"><input type="radio" name="shading" value="No" checked> No / ไม่มีเงา</label>
                     </div>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="form-label">Inverter Location / ตำแหน่งอินเวอร์เตอร์</label>
+                    <label class="form-label">Inverter Location / ตำแหน่งติดตั้งอินเวอร์เตอร์</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="inverter_station" value="Indoor" checked> Indoor</label>
-                        <label class="chk-item"><input type="radio" name="inverter_station" value="Outdoor"> Outdoor</label>
+                        <label class="chk-item"><input type="radio" name="inverter_station" value="Indoor" checked> Indoor / ภายในอาคาร</label>
+                        <label class="chk-item"><input type="radio" name="inverter_station" value="Outdoor"> Outdoor / ภายนอกอาคาร</label>
                     </div>
                 </div>
             </div>
             <div class="mt-4">
-                <label class="form-label">Comments / ข้อเสนอแนะ<span class="req">*</span></label>
-                <textarea id="comments" rows="3" class="form-textarea" data-required="true" data-name="Comments"></textarea>
+                <label class="form-label">Comments / ข้อเสนอแนะการสำรวจ<span class="req">*</span></label>
+                <textarea id="comments" rows="3" class="form-textarea" data-required="true" data-name="Comments / ข้อเสนอแนะ"></textarea>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div><label class="form-label">Representative (EPC)<span class="req">*</span></label><input type="text" id="rep_epc" class="form-input" data-required="true" data-name="Representative (EPC)"></div>
-                <div><label class="form-label">Representative (BGPL)<span class="req">*</span></label><input type="text" id="rep_bgpl" class="form-input" data-required="true" data-name="Representative (BGPL)"></div>
+                <div><label class="form-label">Representative (EPC) / ตัวแทนผู้สำรวจ<span class="req">*</span></label><input type="text" id="rep_epc" class="form-input" data-required="true" data-name="Representative (EPC)"></div>
+                <div><label class="form-label">Representative (BGPL) / ตัวแทนพิจารณา<span class="req">*</span></label><input type="text" id="rep_bgpl" class="form-input" data-required="true" data-name="Representative (BGPL)"></div>
             </div>
         </div>
 
-        <!-- 7. Photos -->
+        <!-- 7. Photo Grid Sections -->
         <div class="section-card" id="card_photos">
             <div class="section-title-row">
                 <div class="section-badge" style="background: linear-gradient(135deg,#4f46e5,#6366f1);"><i class="fa-solid fa-images"></i></div>
                 <div>
-                    <div class="section-title-text font-bold text-slate-800">หมวดหมู่รูปภาพ (Photo Grid Categories)</div>
+                    <div class="section-title-text font-bold text-slate-800">จัดการตารางรูปภาพ (Photo Grid Categories)</div>
                     <div class="section-subtitle text-xs text-slate-400">ต้องแนบรูปอย่างน้อย 1 รูปในทุกหมวด <span class="text-amber-600 font-semibold">(ยกเว้นหมวด Landuse)</span></div>
                 </div>
             </div>
@@ -442,11 +607,11 @@
     </form>
 </div>
 
-<!-- PDF Hidden Render Area -->
+<!-- Area for html2pdf Rendering (Invisible) -->
 <div id="pdfRenderArea"></div>
 
 <script>
-// --- CONSTANTS & INITIALIZATION ---
+// --- GLOBAL DATA & CONSTANTS ---
 const PHOTO_CATEGORIES = [
     { key: "landuse", title: "Landuse", req: false },
     { key: "layout", title: "Layout / Aerial View", req: true },
@@ -460,15 +625,14 @@ const PHOTO_CATEGORIES = [
 
 let photoData = {};
 
+// Initialize Application
 document.addEventListener("DOMContentLoaded", () => {
-    // Set default date to today
-    document.getElementById("report_date").valueAsDate = new Date();
-    
     initTRAndMDBInputs();
     initPhotoSections();
     updateProgress();
 });
 
+// Dynamic Inputs Generator
 function initTRAndMDBInputs() {
     const trWrap = document.getElementById("trInputs");
     const mdbWrap = document.getElementById("mdbInputs");
@@ -479,6 +643,7 @@ function initTRAndMDBInputs() {
     }
 }
 
+// Photo Sections UI Generator
 function initPhotoSections() {
     const container = document.getElementById("photoSectionsContainer");
     container.innerHTML = "";
@@ -495,7 +660,7 @@ function initPhotoSections() {
                     <div class="flex items-center gap-2">
                         <span class="font-bold text-slate-800 text-sm">${cat.title}</span>
                         ${cat.req ? '<span class="text-rose-500 font-bold">*</span>' : '<span class="text-xs text-slate-400">(Optional)</span>'}
-                        <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-slate-200 text-slate-600" id="badge_${cat.key}">0 รูป</span>
+                        <span class="photo-count-badge missing" id="badge_${cat.key}">0 รูป</span>
                     </div>
                     <div>
                         <input type="file" id="file_${cat.key}" accept="image/*" multiple class="hidden" onchange="handleFileSelect(event, '${cat.key}')">
@@ -511,9 +676,22 @@ function initPhotoSections() {
     });
 }
 
-function handleFileSelect(e, key) { processFiles(Array.from(e.target.files), key); }
-function handleDragOver(e, key) { e.preventDefault(); document.getElementById(`photo_card_${key}`).classList.add('dragover'); }
-function handleDragLeave(e, key) { e.preventDefault(); document.getElementById(`photo_card_${key}`).classList.remove('dragover'); }
+// Photo Upload Handlers
+function handleFileSelect(e, key) {
+    const files = Array.from(e.target.files);
+    processFiles(files, key);
+}
+
+function handleDragOver(e, key) {
+    e.preventDefault();
+    document.getElementById(`photo_card_${key}`).classList.add('dragover');
+}
+
+function handleDragLeave(e, key) {
+    e.preventDefault();
+    document.getElementById(`photo_card_${key}`).classList.remove('dragover');
+}
+
 function handleDrop(e, key) {
     e.preventDefault();
     document.getElementById(`photo_card_${key}`).classList.remove('dragover');
@@ -525,7 +703,10 @@ function processFiles(files, key) {
     files.forEach(file => {
         const reader = new FileReader();
         reader.onload = (evt) => {
-            photoData[key].push({ src: evt.target.result, caption: file.name.split('.')[0] });
+            photoData[key].push({
+                src: evt.target.result,
+                caption: file.name.split('.')[0]
+            });
             renderThumbs(key);
             updateProgress();
         };
@@ -551,10 +732,10 @@ function renderThumbs(key) {
 
     if (list.length > 0) {
         card.className = "photo-section-card photo-ok";
-        badge.className = "text-xs px-2 py-0.5 rounded-full font-semibold bg-green-100 text-green-700";
+        badge.className = "photo-count-badge ok";
     } else {
         card.className = cat.req ? "photo-section-card photo-missing" : "photo-section-card";
-        badge.className = cat.req ? "text-xs px-2 py-0.5 rounded-full font-semibold bg-rose-100 text-rose-700" : "text-xs px-2 py-0.5 rounded-full font-semibold bg-slate-200 text-slate-600";
+        badge.className = cat.req ? "photo-count-badge missing" : "photo-count-badge optional";
     }
 
     list.forEach((item, idx) => {
@@ -570,41 +751,51 @@ function renderThumbs(key) {
     });
 }
 
-// --- VALIDATION & PROGRESS ---
+// --- STRICT VALIDATION & PROGRESS ---
 function validateForm() {
     let errors = [];
     let isValid = true;
 
+    // Reset invalid states
     document.querySelectorAll('.field-invalid').forEach(el => el.classList.remove('field-invalid'));
     document.querySelectorAll('.section-card').forEach(el => el.classList.remove('invalid'));
 
+    // 1. Check Input Data-Required
     const requiredInputs = document.querySelectorAll('[data-required="true"]');
     requiredInputs.forEach(input => {
         if (!input.value.trim()) {
             isValid = false;
             input.classList.add('field-invalid');
-            errors.push(`กรอกข้อมูล: ${input.getAttribute('data-name') || input.id}`);
+            const name = input.getAttribute('data-name') || input.id;
+            errors.push(`กรอกข้อมูล: ${name}`);
         }
     });
 
-    if (document.querySelectorAll('input[name="building_type"]:checked').length === 0) {
+    // 2. Check Building Types Checkbox (at least 1)
+    const buildingChecked = document.querySelectorAll('input[name="building_type"]:checked').length > 0;
+    if (!buildingChecked) {
         isValid = false;
         document.getElementById('card_building').classList.add('invalid');
         errors.push(`เลือกประเภทอาคาร (Building Type) อย่างน้อย 1 รายการ`);
     }
 
-    if (!Array.from(document.querySelectorAll('.tr-field')).some(i => i.value.trim() !== "")) {
+    // 3. TR Inputs (at least 1)
+    const trVals = Array.from(document.querySelectorAll('.tr-field')).some(i => i.value.trim() !== "");
+    if (!trVals) {
         isValid = false;
         document.getElementById('card_trmdb').classList.add('invalid');
         errors.push(`กรอกขนาดหม้อแปลง TR อย่างน้อย 1 ช่อง`);
     }
 
-    if (!Array.from(document.querySelectorAll('.mdb-field')).some(i => i.value.trim() !== "")) {
+    // 4. MDB Inputs (at least 1)
+    const mdbVals = Array.from(document.querySelectorAll('.mdb-field')).some(i => i.value.trim() !== "");
+    if (!mdbVals) {
         isValid = false;
         document.getElementById('card_trmdb').classList.add('invalid');
         errors.push(`กรอกขนาด MDB / Main CB อย่างน้อย 1 ช่อง`);
     }
 
+    // 5. Photo Strict Check (All required must have >= 1 photo)
     PHOTO_CATEGORIES.forEach(cat => {
         if (cat.req && photoData[cat.key].length === 0) {
             isValid = false;
@@ -616,30 +807,38 @@ function validateForm() {
     return { isValid, errors };
 }
 
+// Progress Bar Calculation
 function updateProgress() {
     let totalItems = 0;
     let filledItems = 0;
 
+    // Required Text inputs
     const requiredInputs = document.querySelectorAll('[data-required="true"]');
     totalItems += requiredInputs.length;
     requiredInputs.forEach(i => { if (i.value.trim()) filledItems++; });
 
+    // Checkboxes
     totalItems += 1;
     if (document.querySelectorAll('input[name="building_type"]:checked').length > 0) filledItems++;
 
+    // TR & MDB
     totalItems += 2;
     if (Array.from(document.querySelectorAll('.tr-field')).some(i => i.value.trim() !== "")) filledItems++;
     if (Array.from(document.querySelectorAll('.mdb-field')).some(i => i.value.trim() !== "")) filledItems++;
 
+    // Required Photo Categories
     const reqPhotos = PHOTO_CATEGORIES.filter(c => c.req);
     totalItems += reqPhotos.length;
-    reqPhotos.forEach(cat => { if (photoData[cat.key] && photoData[cat.key].length > 0) filledItems++; });
+    reqPhotos.forEach(cat => {
+        if (photoData[cat.key] && photoData[cat.key].length > 0) filledItems++;
+    });
 
     const percent = Math.round((filledItems / totalItems) * 100);
     document.getElementById("progressFill").style.width = `${percent}%`;
     document.getElementById("progressLabel").innerText = `${percent}%`;
 }
 
+// Toast Notifications
 function showToast(title, list = [], type = "error") {
     const wrap = document.getElementById("toastWrap");
     const toast = document.createElement("div");
@@ -648,16 +847,67 @@ function showToast(title, list = [], type = "error") {
     let listHtml = list.length ? `<ul>${list.map(i => `<li>${i}</li>`).join('')}</ul>` : '';
     const icon = type === 'success' ? '<i class="fa-solid fa-circle-check text-green-600"></i>' : '<i class="fa-solid fa-triangle-exclamation text-rose-600"></i>';
     
-    toast.innerHTML = `<h4>${icon} ${title}</h4>${listHtml}`;
+    toast.innerHTML = `
+        <h4>${icon} ${title}</h4>
+        ${listHtml}
+    `;
+
     wrap.appendChild(toast);
     setTimeout(() => toast.remove(), 4500);
 }
 
-function getVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
-function getRadioVal(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; }
-function getChkVals(name) { return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(c => c.value).join(', '); }
+// Helper to get form data
+function getFormData() {
+    const getVal = (id) => document.getElementById(id)?.value || '';
+    const getRadio = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
 
-// --- EXPORT FUNCTIONALITY ---
+    const bTypes = [];
+    document.querySelectorAll('input[name="building_type"]:checked').forEach(c => bTypes.push(c.value));
+
+    const trs = [];
+    for (let i = 1; i <= 4; i++) trs.push(getVal(`tr_${i}`));
+
+    const mdbs = [];
+    for (let i = 1; i <= 4; i++) mdbs.push(getVal(`mdb_${i}`));
+
+    return {
+        headerNo: getVal('header_no'),
+        reportDate: getVal('report_date'),
+        headerTitle: getVal('header_title'),
+        siteName: getVal('site_name'),
+        siteLocation: getVal('site_location'),
+        coordinates: getVal('coordinates'),
+        business: getVal('business'),
+        contactName: getVal('contact_name'),
+        contactNumber: getVal('contact_number'),
+        buildingAge: getVal('building_age'),
+        landUsePlan: getRadio('land_use_plan'),
+        drawing: getRadio('drawing'),
+        aor1: getRadio('aor_1'),
+        buildingTypes: bTypes,
+        roofType: getRadio('roof_type'),
+        rustCorrosion: getRadio('rust_corrosion'),
+        roofCondition: getRadio('roof_condition'),
+        structReinforce: getRadio('struct_reinforce'),
+        meterNo: getVal('meter_no'),
+        meterSn: getVal('meter_sn'),
+        amr: getRadio('amr'),
+        voltageLevel: getRadio('voltage_level'),
+        avgLoad: getVal('avg_load'),
+        trs: trs,
+        mdbs: mdbs,
+        roofSlope: getRadio('roof_slope'),
+        shapeOfRoof: getVal('Shape_of_Roof'),
+        environment: getRadio('Environment'),
+        shading: getRadio('shading'),
+        inverterStation: getRadio('inverter_station'),
+        comments: getVal('comments'),
+        repEpc: getVal('rep_epc'),
+        repBgpl: getVal('rep_bgpl')
+    };
+}
+
+// --- EXPORT HANDLERS ---
 function handleExport(type) {
     const { isValid, errors } = validateForm();
 
@@ -667,217 +917,253 @@ function handleExport(type) {
     }
 
     if (type === 'word') {
-        exportWordDocument();
+        generateWord();
     } else if (type === 'pdf') {
-        exportPDFDocument();
+        generatePDF();
     }
 }
 
-// Helper: Convert Base64 Data URL to Uint8Array for docx.js
-function dataURLToUint8Array(dataURL) {
-    const base64 = dataURL.split(',')[1];
-    const binary = atob(base64);
-    const len = binary.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-        bytes[i] = binary.charCodeAt(i);
-    }
-    return bytes;
-}
+// --- PDF GENERATION (from index.html Engine) ---
+function renderPDFHTML(data) {
+    const formatCheck = (val, target) => (val === target || (Array.isArray(val) && val.includes(target))) ? '☑' : '☐';
 
-// 1. Export Word Document
-async function exportWordDocument() {
-    showToast("กำลังสร้างไฟล์ Word...", ["ระบบกำลังเตรียมรูปภาพและสร้างไฟล์ .docx"], "success");
-    
-    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, ImageRun } = docx;
-
-    const buildingTypes = getChkVals('building_type');
-    const trVals = [1,2,3,4].map(i => getVal(`tr_${i}`)).filter(v => v).join(', ');
-    const mdbVals = [1,2,3,4].map(i => getVal(`mdb_${i}`)).filter(v => v).join(', ');
-
-    // Create Document Content
-    const docChildren = [
-        new Paragraph({
-            children: [
-                new TextRun({ text: getVal("header_title"), bold: true, size: 32, color: "1E1B4B" }),
-            ],
-            alignment: AlignmentType.CENTER,
-            spaceAfter: 200,
-        }),
-        new Paragraph({
-            children: [
-                new TextRun({ text: `Header No: ${getVal("header_no")} | Date: ${getVal("report_date")}`, italic: true, size: 20, color: "64748B" })
-            ],
-            alignment: AlignmentType.CENTER,
-            spaceAfter: 400,
-        })
-    ];
-
-    // Table Data Generator Helper
-    const createTableRow = (label, val) => new TableRow({
-        children: [
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: label, bold: true, size: 18 })] })], width: { size: 40, type: WidthType.PERCENTAGE } }),
-            new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: val || '-', size: 18 })] })], width: { size: 60, type: WidthType.PERCENTAGE } }),
-        ]
-    });
-
-    // Add Information Table
-    const infoRows = [
-        createTableRow("Site Name / ชื่อลูกค้า", getVal("site_name")),
-        createTableRow("Site Location / สถานที่", getVal("site_location")),
-        createTableRow("Coordinates / พิกัด", getVal("coordinates")),
-        createTableRow("Business / ประเภทธุรกิจ", getVal("business")),
-        createTableRow("Contact Person", `${getVal("contact_name")} (${getVal("contact_number")})`),
-        createTableRow("Building Age / อายุอาคาร", `${getVal("building_age")} ปี`),
-        createTableRow("Building Type / ประเภทอาคาร", buildingTypes),
-        createTableRow("Landuse / Drawing / Aor.1", `Landuse: ${getRadioVal("land_use_plan")} | Plan: ${getRadioVal("drawing")} | Aor.1: ${getRadioVal("aor_1")}`),
-        createTableRow("Roof Type & Condition", `${getRadioVal("roof_type")} (Condition: ${getRadioVal("roof_condition")})`),
-        createTableRow("Rust & Corrosion", getRadioVal("rust_corrosion")),
-        createTableRow("Structural Reinforcement", getRadioVal("struct_reinforce")),
-        createTableRow("Meter / S/N", `Meter: ${getVal("meter_no")} | S/N: ${getVal("meter_sn")}`),
-        createTableRow("AMR / Voltage / Avg. Load", `AMR: ${getRadioVal("amr")} | Voltage: ${getRadioVal("voltage_level")} | Avg Load: ${getVal("avg_load")} kW`),
-        createTableRow("Transformer TR (kVA)", trVals),
-        createTableRow("MDB / Main CB (A)", mdbVals),
-        createTableRow("Roof Slope & Shape", `Slope: ${getRadioVal("roof_slope")} | Shape: ${getVal("Shape_of_Roof")}`),
-        createTableRow("Environment & Shading", `Env: ${getRadioVal("Environment")} | Shading: ${getRadioVal("shading")}`),
-        createTableRow("Inverter Location", getRadioVal("inverter_station")),
-        createTableRow("Comments / ข้อเสนอแนะ", getVal("comments")),
-        createTableRow("Representatives", `EPC: ${getVal("rep_epc")} | BGPL: ${getVal("rep_bgpl")}`),
-    ];
-
-    docChildren.push(new Table({ rows: infoRows, width: { size: 100, type: WidthType.PERCENTAGE } }));
-    docChildren.push(new Paragraph({ text: "", spaceAfter: 400 }));
-
-    // Add Photo Sections
-    for (const cat of PHOTO_CATEGORIES) {
-        const photos = photoData[cat.key];
-        if (photos && photos.length > 0) {
-            docChildren.push(new Paragraph({
-                children: [new TextRun({ text: `📷 ${cat.title}`, bold: true, size: 24, color: "4F46E5" })],
-                spaceBefore: 300,
-                spaceAfter: 150
-            }));
-
-            const imgCells = [];
-            for (const img of photos) {
-                try {
-                    const imageBytes = dataURLToUint8Array(img.src);
-                    imgCells.push(new TableCell({
-                        children: [
-                            new Paragraph({
-                                children: [
-                                    new ImageRun({
-                                        data: imageBytes,
-                                        transformation: { width: 220, height: 150 },
-                                    })
-                                ],
-                                alignment: AlignmentType.CENTER
-                            }),
-                            new Paragraph({
-                                children: [new TextRun({ text: img.caption || '', size: 16, italic: true })],
-                                alignment: AlignmentType.CENTER
-                            })
-                        ],
-                        width: { size: 50, type: WidthType.PERCENTAGE }
-                    }));
-                } catch (e) {
-                    console.error("Image process error", e);
-                }
-            }
-
-            // Group cells into 2 per row
-            const photoRows = [];
-            for (let i = 0; i < imgCells.length; i += 2) {
-                const rowChildren = [imgCells[i]];
-                if (imgCells[i + 1]) rowChildren.push(imgCells[i + 1]);
-                else rowChildren.push(new TableCell({ children: [], width: { size: 50, type: WidthType.PERCENTAGE } }));
-                photoRows.push(new TableRow({ children: rowChildren }));
-            }
-
-            if (photoRows.length > 0) {
-                docChildren.push(new Table({ rows: photoRows, width: { size: 100, type: WidthType.PERCENTAGE } }));
-            }
-        }
-    }
-
-    const doc = new Document({ sections: [{ children: docChildren }] });
-    const blob = await Packer.toBlob(doc);
-    saveAs(blob, `Solar_Survey_Report_${getVal("site_name") || 'Site'}.docx`);
-}
-
-// 2. Export PDF Document
-function exportPDFDocument() {
-    showToast("กำลังเตรียมไฟล์ PDF...", ["ระบบกำลังจัดหน้าสำหรับการดาวน์โหลด"], "success");
-
-    const area = document.getElementById("pdfRenderArea");
-    area.style.display = "block";
-
-    let photoHtml = "";
-    PHOTO_CATEGORIES.forEach(cat => {
-        const photos = photoData[cat.key];
-        if (photos && photos.length > 0) {
-            photoHtml += `<h3 style="font-size: 14px; font-weight: bold; color: #4f46e5; margin-top: 15px; margin-bottom: 8px;">📷 ${cat.title}</h3>`;
-            photoHtml += `<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">`;
-            photos.forEach(p => {
-                photoHtml += `
-                    <div style="border: 1px solid #cbd5e1; padding: 6px; border-radius: 6px; text-align: center;">
-                        <img src="${p.src}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 4px;">
-                        <div style="font-size: 10px; color: #475569; margin-top: 4px;">${p.caption}</div>
-                    </div>
-                `;
-            });
-            photoHtml += `</div>`;
-        }
-    });
-
-    const trVals = [1,2,3,4].map(i => getVal(`tr_${i}`)).filter(v => v).join(', ');
-    const mdbVals = [1,2,3,4].map(i => getVal(`mdb_${i}`)).filter(v => v).join(', ');
-
-    area.innerHTML = `
-        <div class="pdf-page">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <h1 style="font-size: 22px; font-weight: bold; color: #1e1b4b;">${getVal("header_title")}</h1>
-                <p style="font-size: 12px; color: #64748b;">Header No: ${getVal("header_no")} | Date: ${getVal("report_date")}</p>
+    let html = `
+    <div class="pdf-doc">
+        <!-- PAGE 1: FORM -->
+        <div class="pdf-block page-break">
+            <div class="pdf-header">
+                <div>
+                    <h1>${data.headerTitle}</h1>
+                    <div class="pdf-header-no">${data.headerNo}</div>
+                </div>
             </div>
+            <div class="pdf-date"><strong>Date:</strong> ${data.reportDate}</div>
 
-            <table class="pdf-table">
-                <tr><th style="width:35%">Site Name / ชื่อลูกค้า</th><td>${getVal("site_name")}</td></tr>
-                <tr><th>Site Location / สถานที่</th><td>${getVal("site_location")}</td></tr>
-                <tr><th>Coordinates / พิกัด</th><td>${getVal("coordinates")}</td></tr>
-                <tr><th>Business / ประเภทธุรกิจ</th><td>${getVal("business")}</td></tr>
-                <tr><th>Contact / ผู้ติดต่อ</th><td>${getVal("contact_name")} (${getVal("contact_number")})</td></tr>
-                <tr><th>Building Age / อายุอาคาร</th><td>${getVal("building_age")} ปี</td></tr>
-                <tr><th>Building Type / ประเภทอาคาร</th><td>${getChkVals('building_type')}</td></tr>
-                <tr><th>Landuse / Drawing / Aor.1</th><td>Landuse: ${getRadioVal("land_use_plan")} | Plan: ${getRadioVal("drawing")} | Aor.1: ${getRadioVal("aor_1")}</td></tr>
-                <tr><th>Roof Type & Condition</th><td>${getRadioVal("roof_type")} (Condition: ${getRadioVal("roof_condition")})</td></tr>
-                <tr><th>Rust & Structural Reinforce</th><td>Rust: ${getRadioVal("rust_corrosion")} | Reinforce: ${getRadioVal("struct_reinforce")}</td></tr>
-                <tr><th>Meter / S/N</th><td>Meter No: ${getVal("meter_no")} | S/N: ${getVal("meter_sn")}</td></tr>
-                <tr><th>AMR / Voltage / Avg. Load</th><td>AMR: ${getRadioVal("amr")} | Voltage: ${getRadioVal("voltage_level")} | Avg Load: ${getVal("avg_load")} kW</td></tr>
-                <tr><th>Transformer TR (kVA)</th><td>${trVals}</td></tr>
-                <tr><th>MDB / Main CB (A)</th><td>${mdbVals}</td></tr>
-                <tr><th>Roof Slope & Shape</th><td>Slope: ${getRadioVal("roof_slope")} | Shape: ${getVal("Shape_of_Roof")}</td></tr>
-                <tr><th>Environment & Shading</th><td>Env: ${getRadioVal("Environment")} | Shading: ${getRadioVal("shading")}</td></tr>
-                <tr><th>Inverter Location</th><td>${getRadioVal("inverter_station")}</td></tr>
-                <tr><th>Comments / ข้อเสนอแนะ</th><td>${getVal("comments")}</td></tr>
-                <tr><th>Representatives</th><td>EPC: ${getVal("rep_epc")} | BGPL: ${getVal("rep_bgpl")}</td></tr>
+            <div class="section-title">1. General Information (ข้อมูลทั่วไป)</div>
+            <table class="data-table">
+                <tr><td class="label-cell"><strong>Site Name / ลูกค้า</strong></td><td>${data.siteName}</td></tr>
+                <tr><td class="label-cell"><strong>Site Location / สถานที่</strong></td><td>${data.siteLocation}</td></tr>
+                <tr><td class="label-cell"><strong>Lat, Longitude / พิกัด</strong></td><td>${data.coordinates}</td></tr>
+                <tr><td class="label-cell"><strong>Business / ธุรกิจ</strong></td><td>${data.business}</td></tr>
+                <tr><td class="label-cell"><strong>Contact / ผู้ติดต่อ</strong></td><td>${data.contactName} (${data.contactNumber})</td></tr>
             </table>
 
-            ${photoHtml}
+            <div class="section-title">2. ข้อมูลอาคาร (Building Information)</div>
+            <table class="data-table">
+                <tr><td class="label-cell"><strong>Building Age / อายุอาคาร (ปี)</strong></td><td>${data.buildingAge} ปี</td></tr>
+                <tr><td class="label-cell"><strong>Land use Plan / ผังเมือง</strong></td><td class="chk-mark">${formatCheck(data.landUsePlan, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.landUsePlan, 'No')} No</td></tr>
+                <tr><td class="label-cell"><strong>Drawing / แบบแปลน</strong></td><td class="chk-mark">${formatCheck(data.drawing, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.drawing, 'No')} No</td></tr>
+                <tr><td class="label-cell"><strong>Aor.1 / ใบอนุญาต อ.1</strong></td><td class="chk-mark">${formatCheck(data.aor1, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.aor1, 'No')} No</td></tr>
+                <tr><td class="label-cell"><strong>Building Type / ประเภทอาคาร</strong></td><td class="chk-mark">
+                    ${formatCheck(data.buildingTypes, 'Warehouse')} Warehouse &nbsp;
+                    ${formatCheck(data.buildingTypes, 'Factory')} Factory &nbsp;
+                    ${formatCheck(data.buildingTypes, 'Office')} Office &nbsp;
+                    ${formatCheck(data.buildingTypes, 'Others')} Others
+                </td></tr>
+            </table>
+
+            <div class="section-title">3. โครงสร้างและหลังคา (Roof & Structure)</div>
+            <table class="data-table">
+                <tr><td class="label-cell"><strong>Roof Type / ประเภทหลังคา</strong></td><td class="chk-mark">
+                    ${formatCheck(data.roofType, 'Metal Sheet')} Metal Sheet &nbsp;
+                    ${formatCheck(data.roofType, 'Tile')} Tile &nbsp;
+                    ${formatCheck(data.roofType, 'Concrete Slab')} Concrete Slab
+                </td></tr>
+                <tr><td class="label-cell"><strong>Rust and Corrosion / สนิมและการกัดกร่อน</strong></td><td class="chk-mark">
+                    ${formatCheck(data.rustCorrosion, 'Good')} Good &nbsp;
+                    ${formatCheck(data.rustCorrosion, 'Moderate')} Moderate &nbsp;
+                    ${formatCheck(data.rustCorrosion, 'Severe')} Severe
+                </td></tr>
+                <tr><td class="label-cell"><strong>Roof Condition / สภาพของหลังคา</strong></td><td class="chk-mark">
+                    ${formatCheck(data.roofCondition, 'Not Required')} Not Required &nbsp;
+                    ${formatCheck(data.roofCondition, 'Needs Replacement')} Needs Replacement
+                </td></tr>
+                <tr><td class="label-cell"><strong>Structural Reinforcement / การเสริมโครงสร้าง</strong></td><td class="chk-mark">
+                    ${formatCheck(data.structReinforce, 'Not Required')} Not Required &nbsp;
+                    ${formatCheck(data.structReinforce, 'Needed')} Needed &nbsp;
+                    ${formatCheck(data.structReinforce, 'Waiting Checking')} Waiting Checking
+                </td></tr>
+            </table>
+
+            <div class="section-title">4. Electrical System (ระบบไฟฟ้า)</div>
+            <table class="data-table">
+                <tr><td class="label-cell"><strong>Meter / มิเตอร์ไฟฟ้า</strong></td><td>${data.meterNo} (S/N: ${data.meterSn})</td></tr>
+                <tr><td class="label-cell"><strong>AMR System</strong></td><td class="chk-mark">${formatCheck(data.amr, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.amr, 'No')} No</td></tr>
+                <tr><td class="label-cell"><strong>Voltage Level</strong></td><td class="chk-mark">${formatCheck(data.voltageLevel, '22kV')} 22kV &nbsp;&nbsp; ${formatCheck(data.voltageLevel, '400-230V')} 400-230V</td></tr>
+                <tr><td class="label-cell"><strong>Avg. Load (kW)</strong></td><td>${data.avgLoad} kW</td></tr>
+            </table>
+
+            <div class="section-title">5. TR (หม้อแปลง) & MDB / Main CB</div>
+            <table class="data-table">
+                <tr>
+                    <td class="label-cell"><strong>TR (kVA)</strong></td>
+                    <td>${data.trs.filter(v => v).join(', ') || '-'} kVA</td>
+                </tr>
+                <tr>
+                    <td class="label-cell"><strong>MDB / Main CB (A)</strong></td>
+                    <td>${data.mdbs.filter(v => v).join(', ') || '-'} A</td>
+                </tr>
+            </table>
+
+            <div class="section-title">6. Site Conditions & Sign</div>
+            <table class="data-table">
+                <tr><td class="label-cell"><strong>Roof Slope / มุมหลังคา</strong></td><td class="chk-mark">${data.roofSlope}</td></tr>
+                <tr><td class="label-cell"><strong>Shape of Roof / รูปทรงหลังคา</strong></td><td>${data.shapeOfRoof}</td></tr>
+                <tr><td class="label-cell"><strong>Environment / สภาพแวดล้อม</strong></td><td class="chk-mark">${data.environment}</td></tr>
+                <tr><td class="label-cell"><strong>Shading / เงาบดบัง</strong></td><td class="chk-mark">${formatCheck(data.shading, 'Yes')} Yes &nbsp;&nbsp; ${formatCheck(data.shading, 'No')} No</td></tr>
+                <tr><td class="label-cell"><strong>Inverter Location</strong></td><td class="chk-mark">${formatCheck(data.inverterStation, 'Indoor')} Indoor &nbsp;&nbsp; ${formatCheck(data.inverterStation, 'Outdoor')} Outdoor</td></tr>
+                <tr><td class="label-cell"><strong>Comments / ข้อเสนอแนะ</strong></td><td>${data.comments}</td></tr>
+            </table>
+
+            <table class="data-table sign-table" style="margin-top: 15px;">
+                <tr>
+                    <td style="width: 50%; text-align: center; vertical-align: bottom;">
+                        <div>________________________</div>
+                        <div>( ${data.repEpc} )</div>
+                        <div>Representative (EPC)</div>
+                    </td>
+                    <td style="width: 50%; text-align: center; vertical-align: bottom;">
+                        <div>________________________</div>
+                        <div>( ${data.repBgpl} )</div>
+                        <div>Representative (BGPL)</div>
+                    </td>
+                </tr>
+            </table>
         </div>
     `;
 
+    // PHOTO PAGES GENERATION
+    PHOTO_CATEGORIES.forEach(cat => {
+        const photos = photoData[cat.key];
+        if (photos && photos.length > 0) {
+            for (let i = 0; i < photos.length; i += 4) {
+                const chunk = photos.slice(i, i + 4);
+                html += `
+                <div class="pdf-block page-break">
+                    <div class="section-header-bar">${cat.title.toUpperCase()}</div>
+                    <table class="photo-grid-table" style="margin-top: 10px;">
+                        <tr>
+                            <td>${chunk[0] ? `<img src="${chunk[0].src}">` : ''}</td>
+                            <td>${chunk[1] ? `<img src="${chunk[1].src}">` : ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="caption-cell">${chunk[0] ? chunk[0].caption : ''}</td>
+                            <td class="caption-cell">${chunk[1] ? chunk[1].caption : ''}</td>
+                        </tr>
+                        ${chunk.length > 2 ? `
+                        <tr>
+                            <td>${chunk[2] ? `<img src="${chunk[2].src}">` : ''}</td>
+                            <td>${chunk[3] ? `<img src="${chunk[3].src}">` : ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="caption-cell">${chunk[2] ? chunk[2].caption : ''}</td>
+                            <td class="caption-cell">${chunk[3] ? chunk[3].caption : ''}</td>
+                        </tr>
+                        ` : ''}
+                    </table>
+                </div>
+                `;
+            }
+        }
+    });
+
+    html += `</div>`;
+    return html;
+}
+
+function generatePDF() {
+    showToast("กำลังสร้างไฟล์ PDF...", ["ระบบกำลังเรนเดอร์เอกสาร"], "success");
+    const data = getFormData();
+    const renderArea = document.getElementById("pdfRenderArea");
+    renderArea.style.display = "block";
+    renderArea.innerHTML = renderPDFHTML(data);
+
     const opt = {
-        margin:       10,
-        filename:     `Solar_Survey_Report_${getVal("site_name") || 'Site'}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin: 0,
+        filename: `Solar_Survey_${data.siteName || 'Report'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    html2pdf().set(opt).from(area).save().then(() => {
-        area.style.display = "none";
-        area.innerHTML = "";
+    html2pdf().set(opt).from(renderArea.children[0]).save().then(() => {
+        renderArea.style.display = "none";
+        renderArea.innerHTML = "";
     });
+}
+
+// --- WORD GENERATION (from index.html Engine) ---
+async function generateWord() {
+    showToast("กำลังสร้างไฟล์ Word...", ["ระบบกำลังสร้างโครงสร้าง .docx"], "success");
+    const data = getFormData();
+    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, ImageRun, Header, Footer, PageBreak } = docx;
+
+    const sections = [];
+
+    // Summary Section
+    const mainChildren = [
+        new Paragraph({ children: [new TextRun({ text: data.headerTitle, bold: true, size: 32 })] }),
+        new Paragraph({ children: [new TextRun({ text: data.headerNo, bold: true, color: "DC2626", size: 24 })] }),
+        new Paragraph({ children: [new TextRun({ text: `Date: ${data.reportDate}`, size: 20 })], space: { after: 200 } }),
+
+        new Paragraph({ children: [new TextRun({ text: "1. General Information", bold: true, size: 22 })], space: { before: 200, after: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: `Site Name: ${data.siteName}\nLocation: ${data.siteLocation}\nCoordinates: ${data.coordinates}\nBusiness: ${data.business}\nContact: ${data.contactName} (${data.contactNumber})` })] }),
+
+        new Paragraph({ children: [new TextRun({ text: "2. Building Information", bold: true, size: 22 })], space: { before: 200, after: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: `Building Age: ${data.buildingAge} years\nLand Use Plan: ${data.landUsePlan}\nDrawing: ${data.drawing}\nAor.1: ${data.aor1}\nBuilding Types: ${data.buildingTypes.join(', ')}` })] }),
+
+        new Paragraph({ children: [new TextRun({ text: "3. Roof & Structure", bold: true, size: 22 })], space: { before: 200, after: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: `Roof Type: ${data.roofType}\nRust & Corrosion: ${data.rustCorrosion}\nRoof Condition: ${data.roofCondition}\nStructure Reinforcement: ${data.structReinforce}` })] }),
+
+        new Paragraph({ children: [new TextRun({ text: "4. Electrical System", bold: true, size: 22 })], space: { before: 200, after: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: `Meter No: ${data.meterNo}\nS/N: ${data.meterSn}\nAMR: ${data.amr}\nVoltage Level: ${data.voltageLevel}\nAvg Load: ${data.avgLoad} kW` })] }),
+
+        new Paragraph({ children: [new TextRun({ text: "5. TR & MDB", bold: true, size: 22 })], space: { before: 200, after: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: `TR (kVA): ${data.trs.filter(v=>v).join(', ')}\nMDB / Main CB (A): ${data.mdbs.filter(v=>v).join(', ')}` })] }),
+
+        new Paragraph({ children: [new TextRun({ text: "6. Site Conditions & Sign", bold: true, size: 22 })], space: { before: 200, after: 100 } }),
+        new Paragraph({ children: [new TextRun({ text: `Roof Slope: ${data.roofSlope}\nShape of Roof: ${data.shapeOfRoof}\nEnvironment: ${data.environment}\nShading: ${data.shading}\nInverter Location: ${data.inverterStation}\nComments: ${data.comments}` })] }),
+        new Paragraph({ children: [new TextRun({ text: `\n\nRepresentative (EPC): ${data.repEpc}\nRepresentative (BGPL): ${data.repBgpl}` })] })
+    ];
+
+    sections.push({ properties: {}, children: mainChildren });
+
+    // Photo Sections
+    for (const cat of PHOTO_CATEGORIES) {
+        const photos = photoData[cat.key];
+        if (photos && photos.length > 0) {
+            const photoChildren = [
+                new Paragraph({ children: [new TextRun({ text: cat.title.toUpperCase(), bold: true, size: 24 })], space: { before: 200, after: 200 } })
+            ];
+
+            for (const item of photos) {
+                try {
+                    const base64Data = item.src.split(',')[1];
+                    const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+                    
+                    photoChildren.push(new Paragraph({
+                        children: [
+                            new ImageRun({
+                                data: binaryData,
+                                transformation: { width: 400, height: 260 }
+                            })
+                        ]
+                    }));
+                    photoChildren.push(new Paragraph({
+                        children: [new TextRun({ text: item.caption, italic: true, size: 18 })],
+                        space: { after: 200 }
+                    }));
+                } catch (e) {
+                    console.error("Error processing photo for docx:", e);
+                }
+            }
+            sections.push({ properties: {}, children: photoChildren });
+        }
+    }
+
+    const doc = new Document({ sections: sections });
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `Solar_Survey_${data.siteName || 'Report'}.docx`);
 }
 </script>
 </body>
