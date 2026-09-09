@@ -119,13 +119,13 @@
         <div class="section-card">
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-address-card text-sky-600"></i> ข้อมูลทั่วไป (General Information)</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="form-label">ลูกค้า / Site Name</label><input type="text" id="site_name" class="form-input"></div>
-                <div><label class="form-label">สถานที่ / Site Location</label><input type="text" id="site_location" class="form-input"></div>
-                <div class="md:col-span-2"><label class="form-label">พิกัด / La, Longitude</label><input type="text" id="coordinates" class="form-input"></div>
-                <div><label class="form-label">ธุรกิจ / Business</label><input type="text" id="business" class="form-input"></div>
+                <div><label class="form-label">Site Name / ลูกค้า</label><input type="text" id="site_name" class="form-input"></div>
+                <div><label class="form-label">Site Location / สถานที่</label><input type="text" id="site_location" class="form-input"></div>
+                <div class="md:col-span-2"><label class="form-label">La, Longitude / พิกัด</label><input type="number" id="coordinates" class="form-input"></div>
+                <div><label class="form-label">Business / ธุระกิจ</label><input type="text" id="business" class="form-input"></div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div><label class="form-label">ผู้ติดต่อ / Contact</label><input type="text" id="contact_name" class="form-input"></div>
-                    <div><label class="form-label">เบอร์ติดต่อ / Phone</label><input type="text" id="contact_number" class="form-input"></div>
+                    <div><label class="form-label">Contact / ผู้ติดต่อ</label><input type="text" id="contact_name" class="form-input"></div>
+                    <div><label class="form-label">Phone / เบอร์ติดต่อ</label><input type="number" id="contact_number" class="form-input"></div>
                 </div>
             </div>
         </div>
@@ -134,35 +134,35 @@
         <div class="section-card">
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-building text-sky-600"></i> ข้อมูลอาคาร (Building Information)</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="form-label">อายุอาคาร / Building Age (ปี)</label><input type="number" id="building_age" class="form-input"></div>
+                <div><label class="form-label">Building Age / อายุอาคาร (ปี)</label><input type="number" id="building_age" class="form-input"></div>
                 <div>
-                    <label class="form-label">ที่ดิน / Land use Plan</label>
+                    <label class="form-label">Land use Plan / ที่ดิน</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="land_use_plan" value="Yes" checked> มี / Yes</label>
-                        <label class="chk-item"><input type="radio" name="land_use_plan" value="No"> ไม่มี / No</label>
+                        <label class="chk-item"><input type="radio" name="land_use_plan" value="Yes" checked> Yes / มี</label>
+                        <label class="chk-item"><input type="radio" name="land_use_plan" value="No"> No / ไม่มี</label>
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">แบบแปลน / Drawing</label>
+                    <label class="form-label">Drawing / แบบแปลน</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="drawing" value="Yes" checked> มี / Yes</label>
-                        <label class="chk-item"><input type="radio" name="drawing" value="No"> ไม่มี / No</label>
+                        <label class="chk-item"><input type="radio" name="drawing" value="Yes" checked> Yes / มี</label>
+                        <label class="chk-item"><input type="radio" name="drawing" value="No"> No / ไม่มี</label>
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">ใบอนุญาต อ.1 / Aor.1</label>
+                    <label class="form-label">Aor.1 / ใบอนุญาต อ.1</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="aor_1" value="Yes" checked> มี / Yes</label>
-                        <label class="chk-item"><input type="radio" name="aor_1" value="No"> ไม่มี / No</label>
+                        <label class="chk-item"><input type="radio" name="aor_1" value="Yes" checked> Yes / มี</label>
+                        <label class="chk-item"><input type="radio" name="aor_1" value="No"> No / ไม่มี</label>
                     </div>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="form-label">ประเภทอาคาร / Building Type (เลือกได้หลายข้อ)</label>
+                    <label class="form-label">Building Type / ประเภทอาคาร</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="checkbox" name="building_type" value="Warehouse"> โกดัง / Warehouse</label>
-                        <label class="chk-item"><input type="checkbox" name="building_type" value="Factory"> โรงงาน / Factory</label>
-                        <label class="chk-item"><input type="checkbox" name="building_type" value="Office"> ออฟฟิศ / Office</label>
-                        <label class="chk-item"><input type="checkbox" name="building_type" value="Others"> อื่นๆ / Others</label>
+                        <label class="chk-item"><input type="checkbox" name="building_type" value="Warehouse"> Warehouse / โกดัง</label>
+                        <label class="chk-item"><input type="checkbox" name="building_type" value="Factory"> Factory / โรงงาน</label>
+                        <label class="chk-item"><input type="checkbox" name="building_type" value="Office"> Office / ออฟฟิศ</label>
+                        <label class="chk-item"><input type="checkbox" name="building_type" value="Others"> Others / อื่นๆ</label>
                     </div>
                 </div>
             </div>
@@ -173,15 +173,15 @@
             <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-layer-group text-sky-600"></i> โครงสร้างและหลังคา (Roof &amp; Structure)</h2>
             <div class="grid grid-cols-1 gap-4">
                 <div>
-                    <label class="form-label">ประเภทหลังคา / Roof Type</label>
+                    <label class="form-label">Roof Type / ประเภทหลังคา</label>
                     <div class="chk-group">
                         <label class="chk-item"><input type="radio" name="roof_type" value="Metal Sheet" checked> Metal Sheet</label>
-                        <label class="chk-item"><input type="radio" name="roof_type" value="Tile"> กระเบื้อง / Tile</label>
-                        <label class="chk-item"><input type="radio" name="roof_type" value="Concrete Slab"> พื้นปูน / Concrete Slab</label>
+                        <label class="chk-item"><input type="radio" name="roof_type" value="Tile"> Tile / กระเบื้อง</label>
+                        <label class="chk-item"><input type="radio" name="roof_type" value="Concrete Slab"> Concrete Slab / พื้นปูน</label>
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">สนิมหรือการกัดกร่อน / Rust and Corrosion</label>
+                    <label class="form-label">Rust and Corrosion / สนิมหรือการกัดกร่อน</label>
                     <div class="chk-group">
                         <label class="chk-item"><input type="radio" name="rust_corrosion" value="Good" checked> Good</label>
                         <label class="chk-item"><input type="radio" name="rust_corrosion" value="Moderate"> Moderate</label>
@@ -189,18 +189,18 @@
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">สภาพของหลังคา / Roof Condition</label>
+                    <label class="form-label">Roof Condition / สภาพของหลังคา</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="roof_condition" value="Not Required" checked> ไม่ต้องเปลี่ยน / Not Required</label>
-                        <label class="chk-item"><input type="radio" name="roof_condition" value="Needs Replacement"> ต้องเปลี่ยน / Needs Replacement</label>
+                        <label class="chk-item"><input type="radio" name="roof_condition" value="Not Required" checked> Not Required / ไม่ต้องเปลี่ยน</label>
+                        <label class="chk-item"><input type="radio" name="roof_condition" value="Needs Replacement"> Needs Replacement / ต้องเปลี่ยน</label>
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">เสริมโครงสร้าง / Structural Reinforcement</label>
+                    <label class="form-label">Structural Reinforcement / Structural Reinforcementเสริมโครงสร้าง</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="struct_reinforce" value="Not Required" checked> ไม่ต้องเสริม / Not Required</label>
-                        <label class="chk-item"><input type="radio" name="struct_reinforce" value="Needed"> ต้องเสริม / Structural Reinforcement Needed</label>
-                        <label class="chk-item"><input type="radio" name="struct_reinforce" value="Waiting Checking"> รอตรวจสอบ / Waiting EPC Checking Structure</label>
+                        <label class="chk-item"><input type="radio" name="struct_reinforce" value="Not Required" checked> Not Required / ไม่ต้องเสริม</label>
+                        <label class="chk-item"><input type="radio" name="struct_reinforce" value="Needed"> Structural Reinforcement Needed / ต้องเสริม</label>
+                        <label class="chk-item"><input type="radio" name="struct_reinforce" value="Waiting Checking"> Waiting EPC Checking Structure / รอตรวจสอ</label>
                     </div>
                 </div>
             </div>
@@ -208,36 +208,36 @@
 
         <!-- 4. Electrical System -->
         <div class="section-card">
-            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-bolt text-amber-500"></i> ระบบไฟฟ้า (Electrical System)</h2>
+            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-bolt text-amber-500"></i> Electrical System (ระบบไฟฟ้า)</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div><label class="form-label">มิเตอร์ไฟฟ้า / Meter</label><input type="text" id="meter_no" class="form-input"></div>
-                <div><label class="form-label">รหัสเครื่องวัด / S/N</label><input type="text" id="meter_sn" class="form-input"></div>
+                <div><label class="form-label">Meter / มิเตอร์ไฟฟ้า</label><input type="text" id="meter_no" class="form-input"></div>
+                <div><label class="form-label">S/N / รหัสเครื่องวัด</label><input type="text" id="meter_sn" class="form-input"></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="form-label">AMR</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="amr" value="Yes"> มี / Yes</label>
-                        <label class="chk-item"><input type="radio" name="amr" value="No" checked> ไม่มี / No</label>
+                        <label class="chk-item"><input type="radio" name="amr" value="Yes"> Yes / มี</label>
+                        <label class="chk-item"><input type="radio" name="amr" value="No" checked> No / ไม่มี</label>
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">ระดับแรงดันไฟฟ้า / Voltage Level (Zero export)</label>
+                    <label class="form-label">Voltage Level (Zero export) / ระดับแรงดันไฟฟ้า</label>
                     <div class="chk-group">
                         <label class="chk-item"><input type="radio" name="voltage_level" value="22kV" checked> 22kV</label>
                         <label class="chk-item"><input type="radio" name="voltage_level" value="400-230V"> 400-230V</label>
                     </div>
                 </div>
-                <div><label class="form-label">ค่าเฉลี่ยการใช้ไฟฟ้า / Avg. Load (kW)</label><input type="number" id="avg_load" class="form-input"></div>
+                <div><label class="form-label">Avg. Load (kW) / ค่าเฉลี่ยการใช้ไฟฟ้า</label><input type="number" id="avg_load" class="form-input"></div>
             </div>
         </div>
 
         <!-- 5. TR & MDB -->
         <div class="section-card">
-            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-plug-circle-bolt text-amber-500"></i> หม้อแปลง (TR) &amp; MDB / Main CB</h2>
+            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-plug-circle-bolt text-amber-500"></i> TR (หม้อแปลง) &amp; MDB / Main CB</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <h3 class="font-bold text-slate-700 text-sm mb-2">หม้อแปลง / TR (kVA)</h3>
+                    <h3 class="font-bold text-slate-700 text-sm mb-2">หม้อแปลงTR (kVA) / หม้อแปลง</h3>
                     <div class="grid grid-cols-2 gap-2" id="trInputs"></div>
                 </div>
                 <div>
@@ -249,33 +249,34 @@
 
         <!-- 6. Site Conditions -->
         <div class="section-card">
-            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-sun text-amber-500"></i> สภาพแวดล้อม (Site Conditions) &amp; ลงนาม</h2>
+            <h2 class="text-base font-bold text-slate-800 border-b pb-2 mb-4"><i class="fa-solid fa-sun text-amber-500"></i> Site Conditions (สภาพแวดล้อม) &amp; Sign / ลงนาม</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="form-label">มุมหลังคา / Roof Slope</label>
+                    <label class="form-label">Roof Slope / มุมหลังคา</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="roof_slope" value="0-15°" checked> 0–15°</label>
-                        <label class="chk-item"><input type="radio" name="roof_slope" value="> 16°"> มากกว่า 16°</label>
-                        <label class="chk-item"><input type="radio" name="roof_slope" value="Others"> อื่นๆ / Others</label>
+                        <label class="chk-item"><input type="radio" name="roof_slope" value="<8°" checked> <8°</label>
+                        <label class="chk-item"><input type="radio" name="roof_slope" value="8-12°" checked> 8-12°</label>
+                        <label class="chk-item"><input type="radio" name="roof_slope" value="12-15°" checked> 12-15°</label>
+                        <label class="chk-item"><input type="radio" name="roof_slope" value=">15°" checked> >15°</label>
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">เงา / Shading</label>
+                    <label class="form-label">Shading / เงา</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="shading" value="Yes"> มีเงา / Yes</label>
-                        <label class="chk-item"><input type="radio" name="shading" value="No" checked> ไม่มีเงา / No</label>
+                        <label class="chk-item"><input type="radio" name="shading" value="Yes"> Yes / มีเงา</label>
+                        <label class="chk-item"><input type="radio" name="shading" value="No" checked> No / ไม่มีเงา</label>
                     </div>
                 </div>
                 <div>
-                    <label class="form-label">ตำแหน่ง Inverter</label>
+                    <label class="form-label">ตInverter Location / ตำแหน่งอินเวอรืเตอร์</label>
                     <div class="chk-group">
-                        <label class="chk-item"><input type="radio" name="inverter_station" value="Indoor" checked> ภายใน / Indoor</label>
-                        <label class="chk-item"><input type="radio" name="inverter_station" value="Outdoor"> ภายนอก / Outdoor</label>
+                        <label class="chk-item"><input type="radio" name="inverter_station" value="Indoor" checked> Indoor / ภายใน</label>
+                        <label class="chk-item"><input type="radio" name="inverter_station" value="Outdoor"> Outdoor / ภายนอก</label>
                     </div>
                 </div>
             </div>
             <div class="mt-4">
-                <label class="form-label">ข้อเสนอแนะ / Comments</label>
+                <label class="form-label">Comments / ข้อเสนอแนะ</label>
                 <textarea id="comments" rows="3" class="form-textarea"></textarea>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
