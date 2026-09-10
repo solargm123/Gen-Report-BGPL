@@ -623,14 +623,14 @@
 <script>
 // --- GLOBAL DATA & CONSTANTS ---
 const PHOTO_CATEGORIES = [
-    { key: "landuse", title: "Landuse", req: false },
-    { key: "layout", title: "Layout / Aerial View", req: true },
-    { key: "roof", title: "Roof Condition", req: true },
-    { key: "structure", title: "Structure & Mounting", req: true },
-    { key: "mdb", title: "MDB & Breaker", req: true },
-    { key: "transformer", title: "Transformer / Substation", req: true },
-    { key: "route", title: "Cable Route & Cable Tray", req: true },
-    { key: "inverter", title: "Inverter Area", req: true }
+
+    { key: "roof", title: "Overall Roof", req: true },
+    { key: "structure", title: "Structure", req: true },
+    { key: "transformer", title: "Transformer", req: true },
+    { key: "mdb", title: "MDB", req: true },
+    { key: "inverter", title: "Inverter Station Location", req: true },
+    { key: "Layout", title: "Overall layout", req: true },
+    { key: "landuse", title: "Landuse", req: false }
 ];
 
 let photoData = {};
