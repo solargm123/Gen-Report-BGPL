@@ -14,7 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bai Jamjuree:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
         :root {
             --brand-indigo: #4f46e5;
             --brand-indigo-dark: #3730a3;
@@ -120,10 +120,11 @@
         /* ---- PDF PREVIEW / PRINT STYLES (mirrors SR-Customer-EPC) ---- */
         .pdf-doc { color: #000; font-size: 11.5px; }
         .pdf-block {
-            background: #fff; width: 210mm; padding: 14mm 15mm;
-            margin: 0 auto; box-sizing: border-box;
+            background: #fff; width: 210mm; min-height: 273mm; padding: 14mm 15mm;
+            margin: 0 auto; box-sizing: border-box; display: flex; flex-direction: column;
         }
         .pdf-block.page-break { page-break-after: always; }
+        .pdf-block > .push-bottom { margin-top: auto; }
         .pdf-header {
             position: relative; text-align: center; margin-bottom: 6px; min-height: 44px;
             padding: 0 130px;
@@ -148,19 +149,28 @@
             border: 1px solid #000; font-weight: 700; text-align: center;
             padding: 6px; font-size: 12.5px; margin-top: 0;
         }
-        table.photo-grid-table { width: 100%; border-collapse: collapse; }
+        table.photo-grid-table { width: 100%; border-collapse: collapse; flex: 1; }
         table.photo-grid-table td {
             border: 1px solid #000; width: 50%; vertical-align: middle; text-align: center; padding: 6px;
         }
+        table.photo-grid-table tr.photo-row td { height: 205px; }
         table.photo-grid-table td.caption-cell {
-            font-size: 11px; padding: 4px 6px; height: 22px;
+            font-size: 11px; padding: 4px 6px; height: 24px;
         }
         table.photo-grid-table img {
-            max-width: 100%; max-height: 190px; object-fit: contain; display: block; margin: 0 auto;
+            max-width: 100%; max-height: 195px; object-fit: contain; display: block; margin: 0 auto;
         }
+        table.photo-grid-table td.single-photo-cell { height: 700px; padding: 10px; }
+        .single-photo-wrap {
+            display: flex; flex-direction: column; gap: 8px; height: 100%; width: 100%;
+            justify-content: center; align-items: center;
+        }
+        .single-photo-wrap img { max-width: 100%; flex: 1 1 0; min-height: 0; object-fit: contain; }
+        .single-photo-wrap .cap { font-size: 11px; flex: 0 0 auto; }
         .sign-table td { height: 60px; }
         .comment-lines div { border-bottom: 1px solid #000; height: 22px; }
         #pdfRenderArea { display: none; }
+
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -894,32 +904,39 @@ function generatePDF() {
             ${(data.comments ? data.comments.split('\\n') : ['','','','']).map(line => `<div>${line}</div>`).join('')}
             ${!data.comments ? '<div></div><div></div>' : ''}
         </div>
-        <table class="data-table sign-table" style="margin-top:20px;">
+        <table class="data-table sign-table push-bottom">
             <tr><td style="width:50%;">&nbsp;<br>${data.rep_epc}</td><td style="width:50%;">&nbsp;<br>${data.rep_bgpl}</td></tr>
             <tr><td style="text-align:center;">Representative (EPC)</td><td style="text-align:center;">Representative (BGPL)</td></tr>
         </table>
     `;
 
     // ---- PHOTO BLOCKS : one page per section, max 6 photos each ----
+    const SINGLE_CELL_SECTIONS = ['sec_layout', 'sec_landuse'];
     const photoBlocks = photoSections.map(sec => {
         const photos = (photoStore[sec.id] || []).slice(0, MAX_PHOTOS_PER_SECTION);
-        if(photos.length === 0){
+
+        if (SINGLE_CELL_SECTIONS.includes(sec.id)) {
+            const imgsHTML = photos.length > 0
+                ? photos.map(p => `<img src="${p.url}">${p.caption ? `<div class="cap">${p.caption}</div>` : ''}`).join('')
+                : '';
             return `
                 ${pdfHeaderHTML(data)}
                 <table class="photo-grid-table">
                     <tr><td colspan="2" class="section-header-bar">${sec.name}</td></tr>
+                    <tr><td colspan="2" class="single-photo-cell"><div class="single-photo-wrap">${imgsHTML}</div></td></tr>
                 </table>
             `;
         }
+
         let gridRows = '';
-        for(let i=0;i<photos.length;i+=2){
-            const p1 = photos[i], p2 = photos[i+1];
-            gridRows += `<tr>
-                <td><img src="${p1.url}"></td>
+        for (let i = 0; i < 6; i += 2) {
+            const p1 = photos[i], p2 = photos[i + 1];
+            gridRows += `<tr class="photo-row">
+                <td>${p1 ? `<img src="${p1.url}">` : ''}</td>
                 <td>${p2 ? `<img src="${p2.url}">` : ''}</td>
             </tr>
             <tr>
-                <td class="caption-cell">${p1.caption || ''}</td>
+                <td class="caption-cell">${p1 ? (p1.caption || '') : ''}</td>
                 <td class="caption-cell">${p2 ? (p2.caption || '') : ''}</td>
             </tr>`;
         }
@@ -1004,7 +1021,6 @@ async function generateWord() {
 
     docChildren.push(...docHeaderBlock());
     docChildren.push(sectionTitle('General Information/ข้อมูลทั่วไป'));
-    docChildren.push(sectionTitle('General Information/ข้อมูลทั่วไป'));
     docChildren.push(buildTable([
         row2('Site Name/ลูกค้า:', data.site_name),
         row2('Site Location/สถานที่:', data.site_location),
@@ -1065,12 +1081,20 @@ async function generateWord() {
         row2('Inverter Station/ตำแหน่ง Inverter:', `${c(data.inverter_station==='Indoor')} Indoor/ภายใน  ${c(data.inverter_station==='Outdoor')} Outdoor/ภายนอก`)
     ]));
 
-docChildren.push(sectionTitle('Comments/ข้อเสนอแนะ')); docChildren.push(new Paragraph({ children:[new TextRun({text:data.comments || '', size:18})], spacing:{after:200} })); 
+docChildren.push(sectionTitle('Comments/ข้อเสนอแนะ'));
+    docChildren.push(new Paragraph({ children:[new TextRun({text:data.comments || '', size:18})], spacing:{after:100},
+        border: { bottom: { color: "000000", space: 4, style: BorderStyle.SINGLE, size: 6 } } }));
+    for (let i = 0; i < 5; i++) {
+        docChildren.push(new Paragraph({ children:[new TextRun({text:'', size:18})], spacing:{after:220},
+            border: { bottom: { color: "000000", space: 4, style: BorderStyle.SINGLE, size: 6 } } }));
+    }
+    docChildren.push(new Paragraph({ text: '', spacing: { after: 300 } }));
     docChildren.push(buildTable([ row2('Representative (EPC):', 
     data.rep_epc, 50, { alignment: 'center', bold: true }), row2('Representative (BGPL):', 
     data.rep_bgpl, 50, { alignment: 'center', bold: true }) ]));
 
-    // Photo pages (one page per section, max MAX_PHOTOS_PER_SECTION photos each)
+    // Photo pages (one page per section; grid sections padded to 6 slots, layout/landuse use one large cell)
+    const SINGLE_CELL_SECTIONS_DOCX = ['sec_layout', 'sec_landuse'];
     for (const sec of photoSections) {
         const photos = (photoStore[sec.id] || []).slice(0, MAX_PHOTOS_PER_SECTION);
         docChildren.push(new Paragraph({ children:[new PageBreak()] }));
@@ -1081,28 +1105,60 @@ docChildren.push(sectionTitle('Comments/ข้อเสนอแนะ')); docCh
             spacing:{after:150}
         }));
 
-        if (photos.length > 0) {
+        if (SINGLE_CELL_SECTIONS_DOCX.includes(sec.id)) {
+            const cellChildren = [];
+            if (photos.length > 0) {
+                for (const p of photos) {
+                    try {
+                        const buf = await fetch(p.url).then(r => r.arrayBuffer());
+                        cellChildren.push(new Paragraph({ children:[new ImageRun({ data:buf, transformation:{width:560, height:Math.floor(650/photos.length)} })], alignment:AlignmentType.CENTER }));
+                        if (p.caption) cellChildren.push(new Paragraph({ children:[new TextRun({text:p.caption, size:16})], alignment:AlignmentType.CENTER, spacing:{after:80} }));
+                    } catch(e) {}
+                }
+            } else {
+                cellChildren.push(new Paragraph({ text: '' }));
+            }
+            docChildren.push(new Table({
+                width:{size:100, type:WidthType.PERCENTAGE},
+                rows: [ new TableRow({ children: [ new TableCell({
+                    width:{size:100,type:WidthType.PERCENTAGE},
+                    children: cellChildren.length ? cellChildren : [new Paragraph({text:''})],
+                    margins: { top: 200, bottom: 200, left: 100, right: 100 }
+                }) ] }) ]
+            }));
+        } else {
             const tableRows = [];
-            for (let i = 0; i < photos.length; i += 2) {
+            for (let i = 0; i < 6; i += 2) {
                 const p1 = photos[i], p2 = photos[i+1];
                 const imgCells = [];
                 const capCells = [];
-                try {
-                    const buf1 = await fetch(p1.url).then(r => r.arrayBuffer());
-                    imgCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({ children:[new ImageRun({ data:buf1, transformation:{width:250, height:170} })], alignment:AlignmentType.CENTER })] }));
-                    capCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({ children:[new TextRun({text:p1.caption||'', size:16})], alignment:AlignmentType.CENTER })] }));
-                } catch(e) {}
-                if (p2) {
+                if (p1) {
                     try {
-                        const buf2 = await fetch(p2.url).then(r => r.arrayBuffer());
-                        imgCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({ children:[new ImageRun({ data:buf2, transformation:{width:250, height:170} })], alignment:AlignmentType.CENTER })] }));
-                        capCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({ children:[new TextRun({text:p2.caption||'', size:16})], alignment:AlignmentType.CENTER })] }));
-                    } catch(e) {}
+                        const buf1 = await fetch(p1.url).then(r => r.arrayBuffer());
+                        imgCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({ children:[new ImageRun({ data:buf1, transformation:{width:280, height:195} })], alignment:AlignmentType.CENTER })] }));
+                        capCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({ children:[new TextRun({text:p1.caption||'', size:16})], alignment:AlignmentType.CENTER })] }));
+                    } catch(e) {
+                        imgCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({})] }));
+                        capCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({})] }));
+                    }
                 } else {
                     imgCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({})] }));
                     capCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({})] }));
                 }
-                tableRows.push(new TableRow({ children: imgCells }));
+                if (p2) {
+                    try {
+                        const buf2 = await fetch(p2.url).then(r => r.arrayBuffer());
+                        imgCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({ children:[new ImageRun({ data:buf2, transformation:{width:280, height:195} })], alignment:AlignmentType.CENTER })] }));
+                        capCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({ children:[new TextRun({text:p2.caption||'', size:16})], alignment:AlignmentType.CENTER })] }));
+                    } catch(e) {
+                        imgCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({})] }));
+                        capCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({})] }));
+                    }
+                } else {
+                    imgCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({})] }));
+                    capCells.push(new TableCell({ width:{size:50,type:WidthType.PERCENTAGE}, children:[new Paragraph({})] }));
+                }
+                tableRows.push(new TableRow({ children: imgCells, height: { value: 2900, rule: "atLeast" } }));
                 tableRows.push(new TableRow({ children: capCells }));
             }
             docChildren.push(new Table({ width:{size:100, type:WidthType.PERCENTAGE}, rows: tableRows }));
