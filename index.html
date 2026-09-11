@@ -144,7 +144,7 @@
             border: 1px solid #000; padding: 5px 8px; vertical-align: top; font-size: 11.5px;
         }
         td.label-cell { width: 34%; }
-        .chk-mark { font-size: 12px; letter-spacing: 0.5px; }
+        .chk-mark { font-size: 12px; }
         .section-header-bar {
         border: 1px solid #000; font-weight: 700; text-align: center;
         padding: 3px; font-size: 12px; margin-top: 0; line-height: 1.3;
@@ -1012,7 +1012,7 @@ function buildPdfBlocksHTML(data) {
             ${!data.comments ? '<div></div><div></div>' : ''}
         </div>
         <table class="data-table sign-table push-bottom">
-            <tr><td style="width:50%;">&nbsp;<br>${data.rep_epc}</td><td style="width:50%;">&nbsp;<br>${data.rep_bgpl}</td></tr>
+            <tr><td style="width:50%; text-align:center;">&nbsp;<br>${data.rep_epc}</td><td style="width:50%; text-align:center;">&nbsp;<br>${data.rep_bgpl}</td></tr>
             <tr><td style="text-align:center;">Representative (EPC)</td><td style="text-align:center;">Representative (BGPL)</td></tr>
         </table>
     `;
@@ -1090,7 +1090,7 @@ function generatePDF() {
 // ---------- WORD EXPORT ----------
 async function generateWord() {
     const data = getReportData();
-    const { Document, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, ImageRun, BorderStyle, PageBreak } = docx;
+    const { Document, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, ImageRun, BorderStyle, PageBreak, VerticalAlign } = docx;
     const docChildren = [];
 
     function base64ToUint8Array(base64) {
@@ -1106,10 +1106,11 @@ async function generateWord() {
         const headerRow = new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             borders: { top: noBorder, bottom: noBorder, left: noBorder, right: noBorder, insideHorizontal: noBorder, insideVertical: noBorder },
+            margins: { top: 40, bottom: 40, left: 80, right: 80 },
             rows: [ new TableRow({ children: [
                 new TableCell({ width: { size: 18, type: WidthType.PERCENTAGE }, children: [ new Paragraph({}) ] }),
                 new TableCell({ width: { size: 64, type: WidthType.PERCENTAGE }, children: [
-                    new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: data.header_title, bold: true, size: 30 })] })
+                    new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: data.header_title, bold: true, size: 33 })] })
                 ]}),
                 new TableCell({ width: { size: 18, type: WidthType.PERCENTAGE }, children: [
                     new Paragraph({ alignment: AlignmentType.RIGHT, children: [new ImageRun({ data: logoBytes, transformation: { width: 130, height: 43 } })] })
@@ -1123,7 +1124,7 @@ async function generateWord() {
         ];
     }
     function sectionTitle(text) {
-        return new Paragraph({ children:[new TextRun({text, bold:true, size:20})], spacing:{before:200, after:80} });
+        return new Paragraph({ children:[new TextRun({text, bold:true, size:19})], spacing:{before:200, after:80} });
     }
     function row2(label, value, labelWidth=34) {
         return new TableRow({ children:[
@@ -1131,7 +1132,12 @@ async function generateWord() {
             new TableCell({ width:{size:100-labelWidth, type:WidthType.PERCENTAGE}, children:[new Paragraph({children:[new TextRun({text:value, size:18})]})] })
         ]});
     }
-    function buildTable(rows) { return new Table({ width:{size:100, type:WidthType.PERCENTAGE}, rows }); }
+    function buildTable(rows) {
+        return new Table({
+            width:{size:100, type:WidthType.PERCENTAGE}, rows,
+            margins: { top: 60, bottom: 60, left: 120, right: 120 }
+        });
+    }
     const c = (cond) => cond ? '☑' : '☐';
 
     docChildren.push(...docHeaderBlock());
@@ -1204,9 +1210,28 @@ docChildren.push(sectionTitle('Comments/ข้อเสนอแนะ'));
             border: { bottom: { color: "000000", space: 4, style: BorderStyle.SINGLE, size: 6 } } }));
     }
     docChildren.push(new Paragraph({ text: '', spacing: { after: 300 } }));
-    docChildren.push(buildTable([ row2('Representative (EPC):', 
-    data.rep_epc, 50, { alignment: 'center', bold: true }), row2('Representative (BGPL):', 
-    data.rep_bgpl, 50, { alignment: 'center', bold: true }) ]));
+    docChildren.push(new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        margins: { top: 60, bottom: 60, left: 120, right: 120 },
+        rows: [
+            new TableRow({ height: { value: 900, rule: "atLeast" }, children: [
+                new TableCell({ width: { size: 50, type: WidthType.PERCENTAGE }, verticalAlign: VerticalAlign.CENTER, children: [
+                    new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: data.rep_epc, size: 18 })] })
+                ]}),
+                new TableCell({ width: { size: 50, type: WidthType.PERCENTAGE }, verticalAlign: VerticalAlign.CENTER, children: [
+                    new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: data.rep_bgpl, size: 18 })] })
+                ]})
+            ]}),
+            new TableRow({ children: [
+                new TableCell({ width: { size: 50, type: WidthType.PERCENTAGE }, children: [
+                    new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'Representative (EPC)', size: 18 })] })
+                ]}),
+                new TableCell({ width: { size: 50, type: WidthType.PERCENTAGE }, children: [
+                    new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: 'Representative (BGPL)', size: 18 })] })
+                ]})
+            ]})
+        ]
+    }));
 
     // Photo pages (one page per section; grid sections padded to 6 slots, layout/landuse use one large cell)
     const SINGLE_CELL_SECTIONS_DOCX = ['sec_layout', 'sec_landuse'];
@@ -1214,10 +1239,13 @@ docChildren.push(sectionTitle('Comments/ข้อเสนอแนะ'));
         const photos = (photoStore[sec.id] || []).slice(0, MAX_PHOTOS_PER_SECTION);
         docChildren.push(new Paragraph({ children:[new PageBreak()] }));
         docChildren.push(...docHeaderBlock());
-        docChildren.push(new Paragraph({
-            children:[new TextRun({text:sec.name, bold:true, size:50})],
-            alignment: AlignmentType.CENTER,
-            spacing:{before:10,after:10}
+        docChildren.push(new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            margins: { top: 60, bottom: 60, left: 100, right: 100 },
+            rows: [ new TableRow({ children: [ new TableCell({
+                width: { size: 100, type: WidthType.PERCENTAGE },
+                children: [ new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: sec.name, bold: true, size: 18 })] }) ]
+            }) ] }) ]
         }));
 
         if (SINGLE_CELL_SECTIONS_DOCX.includes(sec.id)) {
@@ -1276,12 +1304,15 @@ docChildren.push(sectionTitle('Comments/ข้อเสนอแนะ'));
                 tableRows.push(new TableRow({ children: imgCells, height: { value: 2900, rule: "atLeast" } }));
                 tableRows.push(new TableRow({ children: capCells }));
             }
-            docChildren.push(new Table({ width:{size:100, type:WidthType.PERCENTAGE}, rows: tableRows }));
+            docChildren.push(new Table({
+                width:{size:100, type:WidthType.PERCENTAGE}, rows: tableRows,
+                margins: { top: 100, bottom: 100, left: 100, right: 100 }
+            }));
         }
     }
 
     const doc = new Document({
-        styles: { default: { document: { run: { font: "Bai Jamjuree", size: 20 } } } },
+        styles: { default: { document: { run: { font: "Bai Jamjuree", size: 18 } } } },
         sections:[{ children: docChildren }]
     });
     docx.Packer.toBlob(doc).then(blob => {
